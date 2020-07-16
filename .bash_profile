@@ -55,7 +55,7 @@ alias path='echo -e ${PATH//:/\\n}'
 
 
 # brew install TomAnthony/brews/itermocil
-complete -W "$(itermocil --list)" itermocil
+# complete -W "$(itermocil --list)" itermocil
 
 
 # add scripting capabilities for osx keychain
