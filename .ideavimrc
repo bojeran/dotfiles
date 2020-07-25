@@ -1,0 +1,21 @@
+noremap <space> :
+noremap ,f /
+noremap ,j *
+noremap ,k #
+noremap ,o o <ESC>
+noremap ,ü "+p
+noremap ,p "+p
+xnoremap ,y "+y
+
+
+inoremap jj <ESC>
+
+" Convient way to open a file (this can be mimicked in real vim too)
+map ,e :action ActivateProjectToolWindow<CR>
+" Fast switch between windows.
+map ,w :action Switcher<CR>
+
+" enable ideavim builtin extensions
+set easymotion
+set surround
+set commentary
