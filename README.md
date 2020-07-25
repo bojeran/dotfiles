@@ -1,7 +1,12 @@
 # dotfiles
 Symlink the dotfiles you like to your $HOME directory.
 
-# Getting started
+# Getting Started
+```
+git clone https://github.com/bojeran/dotfiles.git
+cd dotfiles
+```
+
 ## tmux
 ```
 ln -s "$(pwd)/.tmux.conf" ~/.tmux.conf
