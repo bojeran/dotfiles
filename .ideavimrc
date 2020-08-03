@@ -19,3 +19,4 @@ map ,w :action Switcher<CR>
 set easymotion
 set surround
 set commentary
+set relativenumber
