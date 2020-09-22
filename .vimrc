@@ -1,57 +1,91 @@
-set nocompatible
-set encoding=utf-8
-filetype off
+" Identity: This file has no dependencies.
+"
 
-filetype plugin indent on
-
-" set leader key
-let mapleader = ","
-" in case I want backspace to also delete newline and so on
-set backspace=indent,eol,start
-" show useful column width
-set colorcolumn=80
-
-
-noremap <space> :
-inoremap jj <ESC>
-noremap ,o o <ESC>
-
-map ,cd :cd %:p:h <CR>
-map ,e :e <C-R>=expand("%:p:h") . "/" <CR>
-map ,s :sp <C-R>=expand("%:p:h") . "/" <CR>
-map ,m :make<CR>
-map ,f /
-" Move between windows more comfortable (also in terminal mode)
-map ,j <c-w>j<c-w><CR>
-tmap ,j <c-w>j<c-w><CR>
-map ,k <c-w>k<c-w><CR>
-tmap ,k <c-w>k<c-w><CR>
-map ,h <c-w>h<c-w><CR>
-tmap ,h <c-w>h<c-w><CR>
-map ,l <c-w>l<c-w><CR>
-tmap ,l <c-w>l<c-w><CR>
-" Most easiest switching between two windows
-map ,w <c-w>w<c-w><CR>
-tmap ,w <c-w>w<c-w><CR>
-
-" tmap ,gt <c-w>
+" BORING
+" if .vimrc file exists then nocompatible is already on, do nothing
+" if you start this .vimrc file with -u and no system-wide .vimrc file exists
+" then we have to turn nocompatible mode explicitly on.
+if &compatible        
+    set nocompatible  " enables all the cool features of the modern vim.
+                      "   Note: compatible mode behaves like the old vi
+endif
 
 
-" didn't use + before therefore i use it to quickly paste
-" map + "+p
-noremap ,p "+p
-xnoremap ,y "+y
-" map ü "+p
-" lmap -> Insert, Command-Line, Lang-Args
-" cmap -> Command-Line
-cmap ü <c-r>+
-tmap ü <c-w>"+
-" switch easier to normal mode
-tmap ö <c-w>N
+" ESSENTIAL SETTINGS YOU MIGHT WANT TO REMEMBER
+" essential for vertical movement
+set number                      " show absolute line number at current position
+
+set relativenumber              " show relative line numbers everywhere else
 
 
-" Some basic changes
-" set tab size to 4 spaces
-set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
+" FURTHER SETTINGS YOU DON'T HAVE TO REMEMBER 
+filetype plugin indent on       " detect filetypes and custom plugin and indent
+                                "   files
+
+syntax on                       " enable syntax highlighting
+
+set encoding=utf-8      " The encoding displayed.
+
+set fileencoding=utf-8  " The encoding written to file.
+
+set backspace=indent,eol,start  " in case I want backspace to also delete
+                                "   newline and so on
+set colorcolumn=80              " show red line at column 80
+
+set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab " set tab size to
+                                                            "   4 spaces
+set ttimeoutlen=0               " remove waiting for special keys after 
+                                "   hitting <ESC>
+
+" HOTKEYS
+let mapleader = ","             " set leader key, for hotkeys starting with it
+
+noremap <space> :               " ergonomic reason (press one key instead of
+                                "   two without moving the hand)
+
+inoremap jj <ESC>               " ergonomic reason (makes me using <ESC> less 
+                                "   often)
+
+noremap ,o o <ESC>              " sometimes I just want a new line without
+                                "   leaving the normal mode
+
+map ,cd :cd %:p:h <CR>          " cd into the directory of the current file
+
+map ,e :e <C-R>=expand("%:p:h") . "/" <CR>  " open other file (replacing
+                                            "   current)
+
+map ,s :sp <C-R>=expand("%:p:h") . "/" <CR> " open other file in split window
+
+map ,m :make<CR>                " call make
+
+map ,f /                        " alternative of pressing / which is quite far
+                                "   to reach on my keyboard.
+
+noremap ,p "+p                  " paste more quickly from system clipboard
+noremap ,P "+P                  " paste more quickly from system clipboard
+
+xnoremap ,y "+y                 " yank to system clipboard (only in selection
+                                "   mode)
+
+" EXPERIMENTAL HOTKEYS IF YOU LIKE
+" cmap ü <c-r>+                 " paste alternative to system-wide pasting
+" tmap ü <c-w>"+                " paste in terminal mode
+" tmap ö <c-w>N                 " switch easier from terminal to normal mode
 
 
+" TMUX INTERACTION
+" source: https://gist.github.com/mislav/5189704
+" tmux + vim switch between panes with C-hjkl without dependencies
+function! TmuxMove(direction)
+        let wnr = winnr()
+        silent! execute 'wincmd ' . a:direction
+        " If the winnr is still the same after we moved, it is the last pane
+        if wnr == winnr()
+                call system('tmux select-pane -' . tr(a:direction, 'phjkl', 'lLDUR'))
+        end
+endfunction
+
+nnoremap <silent> <c-h> :call TmuxMove('h')<cr>
+nnoremap <silent> <c-j> :call TmuxMove('j')<cr>
+nnoremap <silent> <c-k> :call TmuxMove('k')<cr>
+nnoremap <silent> <c-l> :call TmuxMove('l')<cr>
