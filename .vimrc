@@ -40,37 +40,51 @@ set ttimeoutlen=0               " remove waiting for special keys after
 " HOTKEYS
 let mapleader = ","             " set leader key, for hotkeys starting with it
 
-noremap <space> :               " ergonomic reason (press one key instead of
+noremap <space> :
+                                " ergonomic reason (press one key instead of
                                 "   two without moving the hand)
 
-inoremap jj <ESC>               " ergonomic reason (makes me using <ESC> less 
+inoremap jj <ESC>
+                                " ergonomic reason (makes me using <ESC> less 
                                 "   often)
 
-noremap ,o o <ESC>              " sometimes I just want a new line without
+noremap ,o o <ESC>
+                                " sometimes I just want a new line without
                                 "   leaving the normal mode
 
-map ,cd :cd %:p:h <CR>          " cd into the directory of the current file
+map ,cd :cd %:p:h <CR>
+                                " cd into the directory of the current file
 
-map ,e :e <C-R>=expand("%:p:h") . "/" <CR>  " open other file (replacing
+map ,e :e <C-R>=expand("%:p:h") . "/" <CR>
+                                            " open other file (replacing
                                             "   current)
 
-map ,s :sp <C-R>=expand("%:p:h") . "/" <CR> " open other file in split window
+map ,s :sp <C-R>=expand("%:p:h") . "/" <CR>
+                                            " open other file in split window
 
-map ,m :make<CR>                " call make
+map ,m :make<CR>
+                                " call make
 
-map ,f /                        " alternative of pressing / which is quite far
+map ,f /
+                                " alternative of pressing / which is quite far
                                 "   to reach on my keyboard.
 
-noremap ,p "+p                  " paste more quickly from system clipboard
-noremap ,P "+P                  " paste more quickly from system clipboard
+noremap ,p "+p
+                                " paste more quickly from system clipboard
+noremap ,P "+P
+                                " paste more quickly from system clipboard
 
-xnoremap ,y "+y                 " yank to system clipboard (only in selection
+xnoremap ,y "+y
+                                " yank to system clipboard (only in selection
                                 "   mode)
 
 " EXPERIMENTAL HOTKEYS IF YOU LIKE
-" cmap ü <c-r>+                 " paste alternative to system-wide pasting
-" tmap ü <c-w>"+                " paste in terminal mode
-" tmap ö <c-w>N                 " switch easier from terminal to normal mode
+" cmap ü <c-r>+                 
+"                               " paste alternative to system-wide pasting
+" tmap ü <c-w>"+                
+"                               " paste in terminal mode
+" tmap ö <c-w>N                 
+"                               " switch easier from terminal to normal mode
 
 
 " TMUX INTERACTION
