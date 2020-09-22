@@ -101,22 +101,51 @@ export EDITOR="vim"
 
 
 # npm install tabset
-# alias t='tabset'
+# alias ts='tabset'
 
 
 # productivity (with a lot of tabs): force tmux
 #  - sets iterm2 tab name
 #  - sets tmux session name
 #  - fzf for attach and new sessions
-#if ! { [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; } then
-#    result="$(tmux ls -F '#{session_name}'|fzf -e --prompt 'tmux session: ' --print-query)"
-#    if [ $(echo "$result"|wc -l) -eq 2 ]; then
-#        session_name=$(echo "$result"|head -2|tail -1)
-#    else
-#        session_name="$result"
+## check if we are in a tmux session (0=yes, 1=no)
+#{ [ "$TERM" = "screen" ] && [ -n "$TMUX" ]; }
+#export IN_TMUX_SESSION_RC=$?
+#
+#function t {
+#    # when I'm not in a tmux session
+#    if [ ${IN_TMUX_SESSION_RC} -ne 0 ]; then
+#        sessions="$(tmux ls -F '#{session_name}' 2>/dev/null)"
+#        if [ -z "${sessions}" ]; then
+#            sessions="$(printf 'exit')"
+#        else
+#            sessions="$(printf '%s\nexit' "${sessions}")"
+#        fi
+#        result=$(echo "${sessions}"|fzf -e --prompt 'tmux session: ' --print-query)
+#        if [ $(echo "$result"|wc -l) -eq 2 ]; then
+#            session_name=$(echo "${result}"|head -2|tail -1)
+#        else
+#            session_name="${result}"
+#        fi
+#
+#        if { [ "${session_name}" == "exit" ] || [ -z "${session_name}" ]; } then
+#            return
+#        fi
+#
+#        ts $session_name
+#        tmux attach -t "$session_name" || tmux new -s "$session_name"
+#        # When I just exited the tmux session (without errors then exit)
+#        local rc=$?
+#        if [ ${rc} -eq 0 ]; then
+#            exit
+#        fi
 #    fi
-#    t $session_name
-#    tmux attach -t "$session_name" || tmux new -s "$session_name"
+#}
+#alias tmuxtab=t
+#tmuxtab
+#
+## When I am in a tmux session show notes
+#if [ ${IN_TMUX_SESSION_RC} -eq 0 ]; then
+#    tput setaf 4; echo "Enable docker with: docker-activate."; tput sgr 0
 #fi
-
 
