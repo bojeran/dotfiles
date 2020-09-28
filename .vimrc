@@ -85,6 +85,9 @@ xnoremap ,y "+y
 "                               " paste in terminal mode
 " tmap ö <c-w>N                 
 "                               " switch easier from terminal to normal mode
+" noremap ,j 10jzt
+                                " move down more quickly
+
 
 
 " TMUX INTERACTION
