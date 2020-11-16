@@ -55,7 +55,7 @@ noremap ,o o <ESC>
 map ,cd :cd %:p:h <CR>
                                 " cd into the directory of the current file
 
-map ,e :e <C-R>=expand("%:p:h") . "/" <CR>
+map ,e :tabnew :e <C-R>=expand("%:p:h") . "/" <CR>
                                             " open other file (replacing
                                             "   current)
 
