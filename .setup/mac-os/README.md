@@ -31,17 +31,17 @@
   - Make terminal disappear on exit.
   - Shell Integration (maybe)
   - Upgrade bash version (because preinstalled one is too old)
-```
-brew install bash
-sudo bash -c 'echo /usr/local/bin/bash >> /etc/shells'
-chsh -s /usr/local/bin/bash
-```
+    
+        brew install bash
+        sudo bash -c 'echo /usr/local/bin/bash >> /etc/shells'
+        chsh -s /usr/local/bin/bash
+    
   - `brew install iproute2mac`
   - fzf
-```
-brew install fzf
-$(brew --prefix)/opt/fzf/install
-```
+    
+        brew install fzf
+        $(brew --prefix)/opt/fzf/install
+    
   - `brew install coreutils`
   - `brew install gnu-sed --with-default-names`
   - iterm2: enable Status Bar
@@ -59,7 +59,7 @@ $(brew --prefix)/opt/fzf/install
     "Application in terminal may change title". 
     Then `npm install -g iterm2-tab-set`.
 
-
+    
 - XQuartz (if you plan to do X11 Forwarding: `ssh -X ...`)
 
 
