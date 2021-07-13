@@ -21,7 +21,7 @@
 - Setup Docker for Windows (available in WSL2)
 
 
-- Safe Space (if applicable):
+- Save Space (if applicable):
   - Change Steam Default Installation Directory
   - Change UPlay Default Installation directory
   - Change Battle.net Default Installation Directory
