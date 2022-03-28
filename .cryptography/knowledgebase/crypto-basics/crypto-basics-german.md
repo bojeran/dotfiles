@@ -72,14 +72,14 @@ Eine Gruppe ist: Eine Menge + EIN binärer Operator wo die 4 Axiome gelten.
 Ziel ist es die Linearkombination von ggT(a, b) herausfinden. Man spricht auch 
 von der Linearfaktorzerlegung.
 
-| a    | b               | $ \lfloor\frac{a}{b}\rfloor $ | d    | x                   | y                                         |
-| ---- | --------------- | ----------------------------- | ---- | ------------------- | ----------------------------------------- |
-| 102  | 75              | 1                             | 3    | -11                 | 15                                        |
-| 75   | 102 mod 75 = 27 | 2                             | 3    | 4                   | -11                                       |
-| 27   | 21              | 1                             | 3    | -3                  | 4                                         |
-| 21   | 6               | 3                             | 3    | 1                   | -3                                        |
-| 6    | 3               | 2                             | 3    | 0  (y von Reihe -1) | 1 ($ x - \lfloor\frac{a}{b}\rfloor * y $) |
-| 3    | 0               | -                             | 3    | 1                   | 0                                         |
+| a   | b               | $ \lfloor\frac{a}{b}\rfloor $ | d   | x                   | y                                         |
+|-----|-----------------|-------------------------------|-----|---------------------|-------------------------------------------|
+| 102 | 75              | 1                             | 3   | -11                 | 15                                        |
+| 75  | 102 mod 75 = 27 | 2                             | 3   | 4                   | -11                                       |
+| 27  | 21              | 1                             | 3   | -3                  | 4                                         |
+| 21  | 6               | 3                             | 3   | 1                   | -3                                        |
+| 6   | 3               | 2                             | 3   | 0  (y von Reihe -1) | 1 ($ x - \lfloor\frac{a}{b}\rfloor * y $) |
+| 3   | 0               | -                             | 3   | 1                   | 0                                         |
 
 **Lösung:** ggT(102, 75) = 3 = 102 * (-11) + 75 * 15  
             Inverse zu **a ist x** und zu **b ist y** -> wenn es negativ ist 
