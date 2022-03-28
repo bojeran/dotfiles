@@ -1,26 +1,21 @@
 # dotfiles
-Symlink the dotfiles you like to your $HOME directory OR find setup
-instructions in `.setup`.
+Overwhelming information is too much information.
 
-Whenever you have to reinstall your system you have to set up and
-configure all of your applications all over again. This repository tries
-to solve this issue for some common Software and even Operating Systems.
+Just copy the **dotfiles** you like and discover the subfolders to dig into my mind.
 
-There is a lot of Software out there which do not support the configuration
-through a single dotfile. For those applications some manuel instructions
-can be found under `.setup`.
+When the application to be configured cannot be configured via a dotfile you
+might find configurations in one of the subfolders.
 
-**Supported Software Config**:
+
+**Quick jump to the dotfile you need**:
 - [tmux](#tmux)
 - [vim](#vimrc)
 - [ideavim](#vimrc)
 
-**Supported Software Manuel Setup/Config**:
-- [Google Chrome](.setup/google-chrome/README.md)
-- [Windows](.setup/windows/README.md)
-- [Mac OS](.setup/mac-os/README.md)
-- [Linux](.setup/linux/README.md)
-
+**Quick jump to some thoughts**:
+- [Windows](.setup-os/windows/README.md)
+- [Mac OS](.setup-os/mac-os/README.md)
+- [Linux](.setup-os/linux-ubuntu/README.md)
 
 
 # Getting Started
