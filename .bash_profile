@@ -1,4 +1,5 @@
-# comment in what you like
+# ! Comment in what you like
+#    - Keep Performance in mind for a good experience
 
 # HISTCONTROL
 # - ignorespace:
@@ -24,18 +25,6 @@ alias mkdir='mkdir -pv'
 alias ll='ls -FGlAhp'
 alias less='less -FSRXc'
 alias cd..='cd ../'
-alias ..='cd ../'
-alias ...='cd ../../'
-alias .3='cd ../../../'
-alias .4='cd ../../../../'
-alias .5='cd ../../../../../'
-alias .6='cd ../../../../../../'
-#alias f='open -a Finder ./'
-alias ~="cd ~"
-alias c='clear'
-alias path='echo -e ${PATH//:/\\n}'
-#trash () { command mv "$@" ~/.Trash ; }
-#ql () { qlmanage -p "$*" >& /dev/null; }
 
 
 # brew install docker docker-machine virtualbox
