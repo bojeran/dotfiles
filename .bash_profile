@@ -1,6 +1,20 @@
+
 # ! Scroll to the bottom and comment in the function calls you like
 #    - functions are used because of performance reasons
 #      (not used function definitions do not cost a lot of performance)
+
+
+function profile::homebrew {
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+}
+
+
+function profile::cargo {
+    # brew install rust
+    # e.g. cargo install names
+    export PATH="${HOME}/.cargo/bin:$PATH"
+}
+
 
 function profile::history-security {
     # 1. prepended space " " will not be added to history, for example:
@@ -21,13 +35,19 @@ function profile::iterm2-shell-integration {
 
 function profile::bash-completion {
     # brew info bash-completion@2
-    [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
+    [[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]] && . "/opt/homebrew/etc/profile.d/bash_completion.sh"
+}
+
+
+function profile::gnu-coreutils {
+    # brew info coreutils
+    export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
 }
 
 
 function profile::gnu-sed {
     # brew info gnu-sed
-    export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
+    export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
 }
 
 
@@ -93,11 +113,9 @@ function profile::tmux-scripting-enable {
 }
 
 
-function profile::fzf {
+function profile::fzf-enable {
     # brew info fzf
-    # gdate +"%T.%N" >> /tmp/fzfA
     [ -f ~/.fzf.bash ] && source ~/.fzf.bash
-    # gdate +"%T.%N" >> /tmp/fzfB
 }
 
 
@@ -142,11 +160,9 @@ function pyenv-enable {
 
 
 function nvm-enable {
-    # brew info nvm
-    #gdate +"%T.%N" >> /tmp/nvmA
-    export NVM_DIR=~/.nvm
-    source $(brew --prefix nvm)/nvm.sh
-    #gdate +"%T.%N" >> /tmp/nvmB
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+    [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 }
 
 
@@ -157,10 +173,10 @@ function title {
 
 
 # narrow terminal mode
-function n {
+function narrow {
     export PS1="\h:\W \u\n\$ "
 }
-alias narrow=n
+alias n=narrow
 
 
 # https://www.npmjs.com/package/iterm2-tab-set
@@ -169,79 +185,142 @@ alias narrow=n
 alias ts='tabset'
 
 
-# The following feature allows you to create
-# or attach tmux sessions whenever you open a new terminal window.
+# The following feature allows you to automatically create
+# tmux sessions whenever you open a new terminal window.
+#
+# When no tmux session is currently attached you will get a overview and can
+# attach manually.
 #
 # Create session:
-#  - give it a name
+#  - open a new terminal window
+#  -> name is automatically generated
 #  -> a color is automatically picked
 #  -> detach session with `Cmd+w` or `Ctrl+b + d`
+#  (recommended: set Cmd+w to act as Ctrl+b + d by sending Hex-code: 0x2 0x64)
 #
 # Attach session:
+#  - close/detach all terminal sessions
 #  - open new terminal window
 #  - fuzzy find your session and press enter
 #
 
+
 # check if we are in a tmux session (0=yes, 1=no)
-{ [ -n "$TMUX" ]; }
+{ [[ -n "$TMUX" ]]; }
 export IN_TMUX_SESSION_RC=$?
 
 
-function t {
-    # when not in a tmux session
-    if [ ${IN_TMUX_SESSION_RC} -ne 0 ]; then
+# switch
+function tmux::select {
+    if [[ ${IN_TMUX_SESSION_RC} -ne 0 ]]; then
         sessions="$(tmux ls -F '#{session_name}' 2>/dev/null)"
-        if [ -z "${sessions}" ]; then
+        if [[ -z "${sessions}" ]]; then
             sessions="$(printf 'exit')"
         else
             sessions="$(printf '%s\nexit' "${sessions}")"
         fi
-        result=$(echo "${sessions}"|fzf -e --prompt 'tmux session: ' --print-query)
+        result="$(echo "${sessions}"|fzf -e --prompt 'tmux session: ' --print-query)"
         # does not work because xargs has wrong default behaviour for empty string in OS X
         # result="$(tmux ls -F '#{session_name}'|xargs -0 printf '%sexit'|fzf -e --prompt 'tmux session: ' --print-query)"
-        if [ $(echo "$result"|wc -l) -eq 2 ]; then
+        if [[ $(echo "${result}"|wc -l) -eq 2 ]]; then
             session_name=$(echo "${result}"|head -2|tail -1)
         else
             session_name="${result}"
         fi
 
-        if { [ "${session_name}" == "exit" ] || [ -z "${session_name}" ]; } then
+        if { [[ "${session_name}" == "exit" ]] || [[ -z "${session_name}" ]]; } then
             return
         fi
 
-        ts $session_name
+        ts "${session_name}"
         tmux attach -t "$session_name" || tmux new -s "$session_name"
         # When I just exited the tmux session (without errors then exit)
         local rc=$?
-        if [ ${rc} -eq 0 ]; then
+        if [[ ${rc} -eq 0 ]]; then
             # when the session is within an ssh session then go run
             exit
+            #ts NO-TMUX
+        fi
+    else
+        # inside of tmux don't do anything
+        :
+    fi
+}
+alias s=tmux::select
+
+
+function tmux::new {
+    # when not in a tmux session
+    if [[ ${IN_TMUX_SESSION_RC} -ne 0 ]]; then
+        sessions="$(tmux ls -F '#{session_name}' 2>/dev/null)"
+        # first session is always manually attached
+        if ! { tmux ls|grep attached; } && [[ -n "$sessions" ]]; then
+            tmux::select
+            return
+        fi
+
+        # brew install rust
+        # cargo install names
+        session_name="$(names)"
+        # fallback to old manual selection method
+        if { echo "${sessions}" | grep "${session_name}" &>/dev/null; } || [[ -z "${session_name}" ]]; then
+            tmux::select
+            return
+        fi
+
+        ts "${session_name}"
+        tmux attach -t "$session_name" || tmux new -s "$session_name"
+        # tmux runs now in foreground
+
+        # when you exit the tmux session then it continues here
+        local rc=$?
+        echo $rc
+        if [[ ${rc} -eq 0 ]]; then
+            # when the session is within an ssh session then go run
+            exit
+            #ts NO-TMUX
         fi
     fi
 }
-alias tmuxtab=t
-tmuxtab
+alias t=tmux::new
+
+########################
+# SETTINGS START HERE
+
+# prereq for most stuff
+profile::homebrew
+# profile::cargo
+
+# Set this to true to enable tmux feature
+# Prereq: tmux, fzf, iterm2-tab-set (via npm), names (via cargo)
+ENABLE_TMUX_TAB=false
+
+[[ ${ENABLE_TMUX_TAB} == true ]] && tmux::new
 
 # IN TMUX: selectively enable features
 # WITHOUT TMUX: terminal with no modifications (system default)
-if [ ${IN_TMUX_SESSION_RC} -eq 0 ]; then
+if [[ ${IN_TMUX_SESSION_RC} -eq 0 ]] || [[ ${ENABLE_TMUX_TAB} == false ]]; then
     profile::history-security
-    profile::iterm2-shell-integration
-    profile::bash-completion
-    profile::gnu-sed
-    profile::soft-upgrade-ncurses
-    profile::various-aliases
-    profile::set-encoding
-    profile::set-default-editor
-    profile::user-scoped-scripts-enable
+    #profile::iterm2-shell-integration
+    #profile::bash-completion
+    #profile::gnu-coreutils
+    #profile::gnu-sed
+    #profile::soft-upgrade-ncurses
+    #profile::various-aliases
+    #profile::set-encoding
+    #profile::set-default-editor
+    #profile::user-scoped-scripts-enable
 
     # Experimental:
     #profile::keychain-scripting-enable
     #profile::fswatch-scripting-enable
     #profile::tmux-scripting-enable
-    #profile::fzf
+    #profile::fzf-enable
     #profile::glyphs
     #profile::itermocil-autocompletion
 
     tput setaf 4; echo "Commands: docker-enable, pyenv-enable, nvm-enable, narrow/n."; tput sgr 0
 fi
+
+# SETTINGS END HERE
+#######################
