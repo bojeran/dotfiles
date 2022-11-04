@@ -58,6 +58,7 @@
     - `nvm install node`, now you have a development npm as well.
 
   - Install pyenv (and install latest python and set it as global)
+    - `brew install pyenv` and if required do a .bash_profile integration
     - After installation, update .bash_profile 
     - `pyenv install --list`
     - `pyenv install $VERSION`
