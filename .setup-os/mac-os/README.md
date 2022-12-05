@@ -74,6 +74,7 @@
       - This makes a difference for bash script compatibility between systems.
   - Terminal.app -> Preferences > Profiles > (Select a Profile) > Shell > When the shell exits: Close the window
   - Optionally (not recommended): iterm2 -> Install Shell Integration (not compatible with tmux)
+  - Optionally (recommended): Allow touchid authentication when running sudo: by prepending `auth sufficient pam_tid.so` to `/etc/pam.d/sudo`.
   
 
 - OS X Settings:
