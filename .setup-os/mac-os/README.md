@@ -1,7 +1,7 @@
 ## Mac OS Checklist
 
 - !! First !! (order is important):
-  - Install from App Store: Magnet, Velja, Dropover, Hidden Bar, Pure Paste, Key Codes
+  - Install from App Store: BetterSnapTool, Velja, Dropover, Hidden Bar, Pure Paste, Key Codes
   - Change keyboard settings
     (reason: slow repeating keys and auto correction is annoying)
   - [Install iterm2](https://iterm2.com/)
@@ -88,9 +88,14 @@
     - Applications: All Applications, Menu Title: Save As..., Keyboard Shortcut: Shift+Cmd+S
     - Verify that Duplicate command is shadowed in TextEdit.app
   - Touchpad: Three finger swipe. Faster Speed.
-  - Dock & Menu Bar: Uncheck show recent applications
-  - Dock & Menu Bar: Position on Screen Left
+  - Desktop & Dock -> Dock: Uncheck show recent applications
+  - Desktop & Dock -> Dock: Position on Screen Left
+  - Desktop & Dock -> Menu Bar: Recent Documents, applications and servers -> None
+  - Desktop & Dock -> Stage Manager: yes and press customize
+    - Recent applications -> yes
+    - Desktop items -> yes
   - Desktop & Screen Saver -> Screen Saver -> Hot Corners: Change Quick Notes to Desktop
+    - Good multi desktop approach: Hold "alt" and put Desktop in all corners (prevents accidental go to desktop)
   - Finder -> Preferences -> General -> Check Hard disks
   - Finder -> Preferences -> General -> New Finder windows show: Documents
   - Finder: Drag & Drop Favourites to your likings
