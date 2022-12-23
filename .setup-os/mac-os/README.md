@@ -40,6 +40,8 @@
   - iterm2: Keys -> Key Bindings -> set: cmd+w to Send hex code: "0x2 0x64"
     (because ctrl+w does not immediatly put a tmux pane in background when pressed. Fix: This change automatically sends "ctrl+b d" to terminal instead to send the tmux pane immediatly to the background. This is important if you want to quickly close multiple windows and then run "tmux ls" that shows the currently attached windows.)
     (The hexcode can be found it with the App "Key Codes")
+  - iterm2: Preferences -> Advanced Settings -> Scroll wheel sends arrow keys when in alternate screen mode -> yes
+    (this fixes an issue when you scroll with the mouse in a tmux pane that you see the tmux history instead of terminal history)
   - Copy .bash_profile to $HOME/.bash_profile and improve/fix it
   - Install tabset:
     - brew install npm && npm install -g iterm2-tab-set
