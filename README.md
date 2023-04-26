@@ -15,6 +15,7 @@ might find configurations in one of the subfolders.
 - [tmux](#tmux)
 - [vim](#vimrc)
 - [ideavim](#vimrc)
+- [obsidian-vim](#vimrc)
 
 **Quick jump to some thoughts**:
 - [Windows](.setup-os/windows/README.md)
@@ -38,6 +39,9 @@ tmux kill-server
 ```
 ln -s "$(pwd)/.vimrc" ~/.vimrc
 ln -s "$(pwd)/.ideavimrc" ~/.ideavimrc
+
+# replace VAULT_ROOT with the root folder of your vault
+ln -s "$(pwd)/.obsidian.vimrc" VAULT_ROOT/.obsidian.vimrc
 ```
 
 ## ansible.cfg

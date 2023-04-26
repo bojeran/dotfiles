@@ -17,6 +17,8 @@
     - iterm2: General -> Magic -> Advanced GPU Settings -> Uncheck Disable GPU
       renderer when disconnected from power
   - [Install homebrew](https://brew.sh/)
+  - Optionally: [Install MacPorts](https://www.macports.org/install.php)
+    - Needed for clean `sshpass` installation because homebrew does not allow the installation of homebrew because of politics (forces user to use untrustworthy and unmaintained git repos instead). Note: `sshpass` is needed in some automation scenarios. for example: An `ansible playbook` that uses the `ansible_password` option to connect to the target host. (`ansible_password` might be encrypted with `ansible-vault encrypt_string`). Some targets (such as Windows systems) make it difficult to use `public key authentication` (for example when using free MobaSSH). Consider using `win_openssh` ansible module to install OpenSSH on Windows to be able to use public key authentication instead. (Manual installation can be painful)
   - Change shell: zsh to bash
     (reason: homebrew detect shell and may only install shell extensions for the currently active shell)
     - **zsh to bash**: (Install latest bash version because preinstalled version too old)
@@ -42,6 +44,9 @@
     (The hexcode can be found it with the App "Key Codes")
   - iterm2: Preferences -> Advanced Settings -> Scroll wheel sends arrow keys when in alternate screen mode -> yes
     (this fixes an issue when you scroll with the mouse in a tmux pane that you see the tmux history instead of terminal history)
+  - iterm2: Keys -> Key Bindings -> set ALT+. to send Escape sequence: ESC+.
+    (This gives you the default readline-based Linux terminal behaviour for alt+. (Meta+.) that some terminal users use (insert last command argument). You could also change it in Profiles -> Keys -> Left Option Key: ESC+ but this destroys writing special characters such as: "~". All keyboard shortcuts: https://en.wikipedia.org/wiki/GNU_Readline)
+  - iterm2: Keys -> Key Bindings -> set Alt+b, Alt+c, Alt+d, Alt+f, Alt+r, Alt+u (except Alt+l) to send Escape sequence: ESC+b, ESC+c, ..., ESC+u as this gives you the standard emac shortcuts back (See previous bullet point). Alt+l does unfortunately collide with writing @ on a german mac keyboard layout.
   - Copy .bash_profile to $HOME/.bash_profile and improve/fix it
   - Install tabset:
     - brew install npm && npm install -g iterm2-tab-set
@@ -77,6 +82,26 @@
   - Terminal.app -> Preferences > Profiles > (Select a Profile) > Shell > When the shell exits: Close the window
   - Optionally (not recommended): iterm2 -> Install Shell Integration (not compatible with tmux)
   - Optionally (recommended): Allow touchid authentication when running sudo: by prepending `auth sufficient pam_tid.so` to `/etc/pam.d/sudo`.
+  - Homebrew casks:
+    - `lulu` - simple firewall
+    - `keepassxc` - password manager
+    - `pycharm-ce` - IDEs
+    - `balenaetcher` - tool to flash an OS on a USB stick
+    - `calibre` - manage your ebooks
+    - `veracrypt` - create encrypted containers
+    - `visual-studio-code` - extensible text editor
+    - `hex-fiend` - hex editor
+    - `inkscape` - vector graphics tools
+    - `android-platform-tools` - android debug bridge (adb) when needed
+    - `wireshark` - network analytic tools
+    - `vlc` - video player
+    - `krita` - photo editor / drawing tool (better than gimp)
+    - `obsidian` - note-taking
+    - `handbrake` - convert video in other formats
+    - Filesystem:
+      - `openzfs` - use zpool
+      - `macfuse` - successor of osxfuse, mount certain filesystems
+  - For `iSCSI` buy `Daemon Tools - iSCSI initiator`. Note: You probably want to block network traffic from Daemon Tools as they might collect data on you.
   
 
 - OS X Settings:
@@ -134,6 +159,9 @@
         # Increase Terminal Cursor speed:
         defaults write NSGlobalDomain KeyRepeat -int 0
         defaults read|grep KeyRepeat
+       
+        # Disable .DS_Store file creation for network drives
+        defaults write com.apple.desktopservices DSDontWriteNetworkStores true
 
   - Right click on Desktop -> Use Stacks
   - Right click on Desktop -> Show view options -> Show items info

@@ -19,7 +19,7 @@ set relativenumber              " show relative line numbers everywhere else
 
 
 " FURTHER SETTINGS YOU DON'T HAVE TO REMEMBER 
-filetype plugin indent on       " detect filetypes and custom plugin and indent
+filetype plugin indent off      " detect filetypes and custom plugin and indent
                                 "   files
 
 syntax on                       " enable syntax highlighting

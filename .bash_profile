@@ -9,6 +9,11 @@ function profile::homebrew {
 }
 
 
+function profile::macports {
+    export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
+}
+
+
 function profile::cargo {
     # brew install rust
     # e.g. cargo install names
@@ -289,6 +294,7 @@ alias t=tmux::new
 
 # prereq for most stuff
 profile::homebrew
+# profile::macports
 # profile::cargo
 
 # Set this to true to enable tmux feature
@@ -324,3 +330,7 @@ fi
 
 # SETTINGS END HERE
 #######################
+
+#######################
+# STUFF ADDED BY EXTERNAL SCRIPTS
+# THERE SHOULD BE NOTHING BELOW THIS LINE
