@@ -1,0 +1,41 @@
+# bash profile library for MacOS
+# namespace: macos
+
+function macos::keychain-scripting-enable {
+    # add scripting capabilities for osx keychain
+    # WARNING: might be dangerous if done wrong
+    # Add keys: security add-generic-password -s machine -a root -w PaSSW0rd
+    # Get User (root): keychain.sh -u -s google
+    # Get password: keychain.sh -p -s google
+    export PATH="${PATH}:${HOME}/Documents/scripts/keychain/bin"
+}
+
+function macos::glyphs {
+    # codepoints for glyphs
+    . ${HOME}/Documents/git/awesome-terminal-fonts/build/devicons-regular.sh
+    . ${HOME}/Documents/git/awesome-terminal-fonts/build/fontawesome-regular.sh
+    . ${HOME}/Documents/git/awesome-terminal-fonts/build/octicons-regular.sh
+    . ${HOME}/Documents/git/awesome-terminal-fonts/build/pomicons-regular.sh
+}
+
+
+function macos::iterm2-shell-integration {
+    # See: https://iterm2.com/documentation-shell-integration.html
+    test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
+}
+
+
+function macos::docker-enable {
+    # To activate docker on MacOS you usually use following command:
+    #
+    #    eval $(docker-machine env vbox)
+    #
+    # But this command is super slow. One fix is to use the following commands.
+    : ${DOCKER_MACHINE_NAME="vbox"}
+    eval $(docker-machine inspect ${DOCKER_MACHINE_NAME} --format \
+    "export DOCKER_HOST=tcp://{{ .Driver.IPAddress }}:2376
+    export DOCKER_TLS_VERIFY=1
+    export DOCKER_CERT_PATH={{ .HostOptions.AuthOptions.StorePath }}
+    export DOCKER_MACHINE_NAME=${DOCKER_MACHINE_NAME}")
+}
+alias docker-enable=macos::docker-enable

@@ -1,0 +1,38 @@
+# brew install readline
+if [[ -d "/usr/local/opt/readline" ]]; then
+  LDFLAGS+=" -L/usr/local/opt/readline/lib"
+  CPPFLAGS+=" -I/usr/local/opt/readline/include"
+fi
+
+
+# brew install libffi
+if [[ -d "/usr/local/opt/libffi" ]]; then
+  export LDFLAGS+=" -L/usr/local/opt/libffi/lib"
+  export CPPFLAGS+=" -I/usr/local/opt/libffi/include"
+fi
+
+
+# brew install openssl@1.1
+if [[ -d "/usr/local/opt/openssl@1.1" ]]; then
+  export LDFLAGS="-L/usr/local/opt/openssl@1.1/lib"
+  export CPPFLAGS="-I/usr/local/opt/openssl@1.1/include"
+fi
+
+
+# brew install sqlite
+if [[ -d "/usr/local/opt/sqlite" ]]; then
+  export LDFLAGS="-L/usr/local/opt/sqlite/lib"
+  export CPPFLAGS="-I/usr/local/opt/sqlite/include"
+fi
+
+
+# brew install ncurses
+if [[ -d "/usr/local/opt/ncurses" ]]; then
+  export LDFLAGS="-L/usr/local/opt/ncurses/lib"
+  export CPPFLAGS="-I/usr/local/opt/ncurses/include"
+fi
+
+
+# export the variables
+[[ -v LDFLAGS ]] && export LDFLAGS
+[[ -v CPPFLAGS ]] && export CPPFLAGS

@@ -1,0 +1,7 @@
+# a bash library with general bash functionality abstractions
+
+function helper::source-bash() {
+    BASH_LIBRARY="${BASH_LIBRARY_LOCATION}/bash_profile_common"
+    [[ -f "${BASH_LIBRARY}" ]] && source "${BASH_LIBRARY}"
+    return 0
+}

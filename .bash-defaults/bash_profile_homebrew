@@ -1,0 +1,79 @@
+# bash profile library for homebrew installed packages
+# namespace: brew
+
+
+function brew::homebrew {
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+}
+
+
+function brew::bash-completion@2 {
+    # brew info bash-completion@2
+    [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
+}
+
+
+function brew::coreutils {
+    # brew info coreutils
+    if [[ -d "/usr/local/opt/coreutils/libexec/gnubin" ]]; then
+        export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+    fi
+}
+
+
+function brew::gnu-sed {
+    # brew info gnu-sed
+    if [[ -d "/usr/local/opt/gnu-sed/libexec/gnubin" ]]; then
+        export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
+    fi
+}
+
+
+function brew::gnu-getopt {
+    # brew info gnu-getopt
+    if [[ -d "/usr/local/opt/gnu-getopt/bin" ]]; then
+        export PATH="/usr/local/opt/gnu-getopt/bin:$PATH"
+    fi
+}
+
+
+function brew::ncurses {
+    # As MacOS comes with an old version of ncurses that can lead to various
+    # issues. This commands adds the latest version of ncurses in front to
+    # preinstalled version.
+    # brew info ncurses
+    export PATH="/usr/local/opt/ncurses/bin:$PATH"
+}
+
+
+function brew::fzf {
+    # brew info fzf
+    [[ -f ~/.fzf.bash ]] && source ~/.fzf.bash
+}
+
+
+function brew::itermocil-autocompletion {
+    # brew info TomAnthony/brews/itermocil
+    complete -W "$(itermocil --list)" itermocil
+}
+
+
+function brew::pyenv-enable {
+    # brew info pyenv
+    #gdate +"%T.%N" >> /tmp/pyenvA
+    eval "$(pyenv init -)"
+    if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
+    #gdate +"%T.%N" >> /tmp/pyenvB
+}
+alias pyenv-enable=brew::pyenv-enable
+
+
+function brew::nvm-enable {
+    # ??
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+    [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+}
+alias nvm-enable=brew::nvm-enable
+
+
