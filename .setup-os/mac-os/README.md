@@ -3,7 +3,7 @@
 - !! First !! (order is important):
   - Install from App Store: BetterSnapTool, Velja, Dropover, Hidden Bar, Pure Paste, Key Codes
   - Change keyboard settings
-    (reason: slow repeating keys and auto correction is annoying)
+    (reason: slow repeating keys and autocorrection is annoying)
   - [Install iterm2](https://iterm2.com/)
     - iterm2: increase font size
       (Profiles -> Text -> 16)
@@ -40,8 +40,8 @@
 
   - Copy .vimrc to $HOME/.vimrc (no changes required)
   - iterm2: Keys -> Key Bindings -> set: cmd+w to Send hex code: "0x2 0x64"
-    (because ctrl+w does not immediatly put a tmux pane in background when pressed. Fix: This change automatically sends "ctrl+b d" to terminal instead to send the tmux pane immediatly to the background. This is important if you want to quickly close multiple windows and then run "tmux ls" that shows the currently attached windows.)
-    (The hexcode can be found it with the App "Key Codes")
+    (because ctrl+w does not immediately put a tmux pane in background when pressed. Fix: This change automatically sends "ctrl+b d" to terminal instead to send the tmux pane immediately to the background. This is important if you want to quickly close multiple windows and then run "tmux ls" that shows the currently attached windows.)
+    (The hexcode can be found with the App "Key Codes")
   - iterm2: Preferences -> Advanced Settings -> Scroll wheel sends arrow keys when in alternate screen mode -> yes
     (this fixes an issue when you scroll with the mouse in a tmux pane that you see the tmux history instead of terminal history)
   - iterm2: Keys -> Key Bindings -> set ALT+. to send Escape sequence: ESC+.
@@ -98,6 +98,8 @@
     - `krita` - photo editor / drawing tool (better than gimp)
     - `obsidian` - note-taking
     - `handbrake` - convert video in other formats
+    - `keepingyouawake` - prevents macbook sleep
+    - `background-music` - per-app volume control (might break audio on your system)
     - Filesystem:
       - `openzfs` - use zpool
       - `macfuse` - successor of osxfuse, mount certain filesystems
@@ -166,6 +168,8 @@
   - Right click on Desktop -> Use Stacks
   - Right click on Desktop -> Show view options -> Show items info
      
+- Preferences -> Spotlight -> Exclude: /Volumes
+
 - XQuartz (if you plan to do X11 Forwarding: `ssh -X ...`)
 
 - Docker (see `.bash_profile` included in this project)

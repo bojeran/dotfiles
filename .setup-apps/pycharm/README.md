@@ -11,3 +11,9 @@
 
 - Editor -> General -> Soft-Wraps -> Soft-Wrap these files: `.md, ...`
   When writing more complex documentation there is almost no way around soft wrapping because of the simple problem of extending text that is hard-wrapped (except it is hard-wrapped automatically).
+
+- Under Windows:
+  - Keymap: Stay at Windows Keymap (even though IntelliJ IDEA Classic (macOS) is also interesting)
+    - Keymap: New... -> Ctrl+N
+    - Keymap: Generate... -> Ctrl+N
+    - Keymap: Tool Windows -> Project: Ctrl+1   (to mimick: Cmd+1 behaviour)

@@ -1,26 +1,27 @@
 # dotfiles
-About the dotfiles:
-- !!! no dependencies
-- Compatible with: Windows, WSL2, MacOS, Linux
-- Setup&Config instructions for common Operating Systems
 
-Just copy the **dotfiles** you like and discover the 
-subfolders to dig into my mind.
+Look into this repository when you care about the importance of following features, in this order:
+ - load-time (>implies snappy terminal behaviour)
+ - no dependencies (>implies quick-deployment of the dotfiles) (>implies compatibility with WSL2, macOS, Linux)
+ - don't mess with the default behaviour (>learned shortcuts work on most systems)
 
-When the application to be configured cannot be configured via a dotfile you
-might find configurations in one of the subfolders.
-
+You will also find setup&config instructions for: mostly macOS, a bit for Windows, little for Linux.
 
 **Quick jump to the dotfile you need**:
 - [tmux](#tmux)
-- [vim](#vimrc)
-- [ideavim](#vimrc)
-- [obsidian-vim](#vimrc)
+- VIM:
+  - [vim](#vimrc)
+  - [ideavim](#vimrc)
+  - [obsidian-vim](#vimrc)
 
-**Quick jump to some thoughts**:
+**Re-/installing a new OS - I got you covered**:
 - [Windows](.setup-os/windows/README.md)
 - [Mac OS](.setup-os/mac-os/README.md)
 - [Linux](.setup-os/linux-ubuntu/README.md)
+
+Just copy the **dotfiles** you like and discover the sub-folders to dig into my mind.
+
+When the application to be configured cannot be configured via a dotfile you might find configurations in one of the sub-folders.
 
 
 # Getting Started
@@ -92,6 +93,8 @@ read in order:
     `exit` command is executed. (In both interactive and non-interactive 
     shells)
 
+A good indicator that you are in a login shell is a "-" (dash) in the output of "echo $0". However, using the special flags "$-" is better for automation. You can change the redirection of the current shell with for example: `exec > >(tee ${LOG_FILE}) 2>&1` (no arguments). Or you replace the current shell with a different command `exec command`. Sometimes it is better to scope the redirection for some commands with: `{ command1; ...; } > >(tee ${LOG_FILE}) 2>&1`.
+
 Some examples to try out:
 ```
 # Automated way to find out the SHELL type:
@@ -139,7 +142,7 @@ hello world
 - `/sbin`: Early boot apps needing root privileges e.g. `ping`.
 - `/usr/bin`: System-wide binaries e.g. `unzip`.
 - `/usr/sbin`: System-wide binaries needing root privileges e.g. `tcpdump`.
-- `/usr/local/bin`: Your own scripts which are system-wide available. Also
+- `/usr/local/bin`: Your own scripts which are system-wide available. Also,
 commonly used by `homebrew`.
 - `/usr/local/sbin`: Your own scripts needing root privileges.
 - `$HOME/bin`: Your own user scoped scripts. Consider using `$HOME/.local/bin`
@@ -147,7 +150,7 @@ instead.
 - `${HOME}/.local/bin`: Your own user scoped scripts for SHELL invocation
 purposes. By using this path you maintain compatibility with systemd. This
 is something you might want for most user scoped scripts as systemd is very
-common nowadays. Recommending using this folder on MacOS / FreeBSD systems
+common nowadays. Recommending using this folder on macOS / FreeBSD systems
 as well (requires to add this folder to the PATH):
  
       mkdir -p "${HOME}/.local/bin"

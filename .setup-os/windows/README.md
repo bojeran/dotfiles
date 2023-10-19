@@ -1,6 +1,14 @@
-# Windows Unattended Installation
+# Windows Installation Methods
+Options:
+- **Win10/11-ntlite-custom-image:** Use NTLITE to create a custom image, but you might have to live with no proper Windows Update and other problems.
+- **Win10/11-diy-custom-image:** Install Windows; install/configure what you like and then capture the image with `Dism /Capture-Image /ImageFile:c:\IMG\install.wim /CaptureDir:C:\IMG /Name:ImgData`
+- **Win10-run-on-usb-stick-method:** See below. Might not work properly with Win11.
 
-Best way to install windows 10
+# Win10 Run On USB Stick Method
+
+A Rapid way of Windows 10 installation:
+ - Optionally get NTLite and create your own Windows 10 Image.
+
  - New folder `C:\IMG\` (folder name and location doesn't matter)
 
  - Mount `windows10.iso` and copy `../source/install.wim` to `C:\IMG\`
@@ -27,7 +35,7 @@ Best way to install windows 10
             exit
 
 
- - copy `C:\Program Files\Windows AIK\Tools\amd64\imagex.exe` to `C:\IMG\`
+ - copy `C:\Program Files\Windows AIK\Tools\amd64\imagex.exe` to `C:\IMG\` (not bcdboot.exe)
 
  - Cmd-Admin (Usbstick Letter f:):
    (you might have to apply a letter to your drive with the partition manager)
@@ -39,10 +47,23 @@ Best way to install windows 10
 
  - Optionally you can also automate the privacy answers at the first startup of windows.
    (Not sure how, probably with ADK (Windows Assessment and Deployment Kit))
+ 
 
 
 
 # Windows Setup
+
+- Explorer -> This PC -> Right-Click C: drive (and/or any other drive) -> General -> uncheck: Allow files on this drive to have contents indexed in addition to file properties
+
+- Install simplewall
+  - Import "default.xml" (previous configurations)
+  - Configure manually
+
+- Install firefox
+  - optionally create a firefox profile: Win+R -> `firefox -P`
+  - Run the `privacy.sexy` script for firefox
+  - Configure manually
+
 
 - Install chocolatey (https://chocolatey.org/install)
   - Install OpenSSL
@@ -64,8 +85,8 @@ Best way to install windows 10
       to use a Webcam
 
 - **Disable Windows Defender**
-  - The following will probably not work and in the end you might need a script which runs on every
-    Windows start. But you can try.
+  - The only sustainable and clean method to get rid of Windows Defender seems to be installing a fresh windows instance without it. Check out the ntlite based windows installation method.
+  - The following will probably not work and in the end you might need a script which runs on every Windows start. But you can try.
   - Read about [Tamper Protection](
     https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/prevent-changes-to-security-settings-with-tamper-protection?view=o365-worldwide)
   - Go to Windows Security Settings and disable everything. Most importantly `Realtime Protection` and 
@@ -131,6 +152,13 @@ Best way to install windows 10
 - Setup Docker for Windows (available in WSL2)
 
 
+- File Explorer Options -> General -> Privacy -> Uncheck: Show files from Office.com
+- File Explorer Options -> General -> Open File Explorer to: This PC
+- File Explorer Options -> View -> Check: Display the full path in the title bar.
+- File Explorer Options -> View -> Uncheck: Hide folder merge conflicts
+- File Explorer Options -> View -> Uncheck: Use Sharing Wizard
+
+
 - Save Space (if applicable):
   - Change Steam Default Installation Directory
   - Change UPlay Default Installation directory
@@ -162,7 +190,7 @@ Best way to install windows 10
       changes in the actual application instead of unchecking.
     - You can repeat this process after every installation.
   - Simplewall (Alternative: Tinywall (but little worse))
-  
+
  
 - For common Windows privacy concerns check out: [privacy.md](privacy.md).
 
@@ -170,6 +198,13 @@ Best way to install windows 10
 - If you use a QMK keyboard you might want to run the following in an elevated shell:
   `REG ADD HKCU\Software\Classes\ms-officeapp\Shell\Open\Command /t REG_SZ /d rundll32`
   (source: https://superuser.com/questions/1455857/how-to-disable-office-key-keyboard-shortcut-opening-office-app)
+
+
+- Disable Windows path length limit (260 characters).
+
+- Search: Computer Management -> Services and Applications: Set `Secondary Logon Startup Type` to automatic and start. (This allows you to right-click programs with shift to start programs as other user)
+
+- Set password to never expire: Win+R -> `winplwiz` -> Advanced. User -> right-click user -> properties -> Check: Password never expires.
 
 
 # Disk setup
