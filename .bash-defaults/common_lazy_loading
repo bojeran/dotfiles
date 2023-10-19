@@ -1,0 +1,43 @@
+
+# global variables (no change needed)
+#
+PROMPT_COMMAND_FILE="${HOME}/.command_not_found"
+
+# magic variables (bash special purpose variables)
+#
+PROMPT_COMMAND='[[ -f "${PROMPT_COMMAND_FILE}" ]] && { source "${PROMPT_COMMAND_FILE}";rm "${PROMPT_COMMAND_FILE}"; }'
+
+function lazy::write_load_env() {
+    echo "Loading environment: '[$1]'."
+    echo "env::$1" > "${PROMPT_COMMAND_FILE}"
+}
+
+function lazy::write_run_command() {
+    echo "$@" >> "${PROMPT_COMMAND_FILE}"
+}
+
+# runs in a subshell
+# not PROMPT_COMMAND afterwards
+command_not_found_handle() {
+    local auto_check_env
+
+    # quick load for "big programs that change the shell behaviour"
+    if [[ "$(type -t "env::$1")" == "function" ]]; then
+        lazy::write_load_env "$1"
+        lazy::write_run_command "$@"
+        return "0"
+    fi
+
+    # slow load for commands that are in one of the environments
+    # TODO: build hash table in the background (for quick load)
+    for auto_check_env in ${AUTO_CHECK_ENVS[@]}; do
+        echo "Looking for command in ${auto_check_env} environment."
+        if ( "env::${auto_check_env}"; which "$1" &> /dev/null; ); then
+            lazy::write_load_env "${auto_check_env}"
+            lazy::write_run_command "$@"
+            return "0"
+        fi
+    done
+    echo "Not found in any AUTO_CHECK_ENV. Exit."
+    return "127"
+}

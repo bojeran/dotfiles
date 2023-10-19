@@ -1,0 +1,17 @@
+function env::docker {
+    env::brew  # dependency
+
+    # To activate docker on MacOS you usually use following command:
+    #
+    #    eval $(docker-machine env vbox)
+    #
+    # But this command is super slow. One fix is to use the following commands.
+    : ${DOCKER_MACHINE_NAME="vbox"}
+    eval $(docker-machine inspect ${DOCKER_MACHINE_NAME} --format \
+    "export DOCKER_HOST=tcp://{{ .Driver.IPAddress }}:2376
+    export DOCKER_TLS_VERIFY=1
+    export DOCKER_CERT_PATH={{ .HostOptions.AuthOptions.StorePath }}
+    export DOCKER_MACHINE_NAME=${DOCKER_MACHINE_NAME}")
+
+    PS1="${PS1}[docker] "
+}

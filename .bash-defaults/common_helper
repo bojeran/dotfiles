@@ -1,0 +1,6 @@
+# a bash library with general bash functionality abstractions
+
+function helper::source-bash {
+    [[ -f "${1}" ]] && source "${1}"
+    return 0
+}

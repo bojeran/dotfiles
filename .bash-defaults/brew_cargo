@@ -1,8 +1,10 @@
 # bash profile library for cargo installed packages (rust)
 # namespace: cargo
 
-function cargo::cargo {
+function env::cargo {
+    env::brew  # dependency
     # brew install rust
     # e.g. cargo install names
     export PATH="${HOME}/.cargo/bin:$PATH"
+    PS1="${PS1}[cargo] "
 }
