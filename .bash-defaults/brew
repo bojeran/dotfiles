@@ -2,9 +2,24 @@
 # namespace: brew
 
 
-function brew::homebrew {
+# why not shadow brew directly?
+# Because it will mess with some checks if "brew" is available or not.
+function env::brew {
+    # prevent multiple imports
+    if which brew &>/dev/null; then return; fi
+
     eval "$(/opt/homebrew/bin/brew shellenv)"
+    PS1="${PS1}[brew] "
+
+    # Issue: When homebrew is loaded, the pyenv command becomes available
+    #        and therefore it won't load the pyenv environment when I type
+    #        `pyenv`. In this case you have to use env::pyenv. But this is
+    #        intended behaviour.
 }
+
+#function brew::homebrew {
+#    eval "$(/opt/homebrew/bin/brew shellenv)"
+#}
 
 
 function brew::bash-completion@2 {
@@ -58,22 +73,7 @@ function brew::itermocil-autocompletion {
 }
 
 
-function brew::pyenv-enable {
-    # brew info pyenv
-    #gdate +"%T.%N" >> /tmp/pyenvA
-    eval "$(pyenv init -)"
-    if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
-    #gdate +"%T.%N" >> /tmp/pyenvB
-}
-alias pyenv-enable=brew::pyenv-enable
 
 
-function brew::nvm-enable {
-    # ??
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-    [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-}
-alias nvm-enable=brew::nvm-enable
 
 
