@@ -106,3 +106,18 @@ nnoremap <silent> <c-h> :call TmuxMove('h')<cr>
 nnoremap <silent> <c-j> :call TmuxMove('j')<cr>
 nnoremap <silent> <c-k> :call TmuxMove('k')<cr>
 nnoremap <silent> <c-l> :call TmuxMove('l')<cr>
+
+
+
+" Zotero integration
+" source: https://retorque.re/zotero-better-bibtex/citing/cayw/
+function! ZoteroCite()
+  " pick a format based on the filetype (customize at will)
+  let format = &filetype =~ '.*tex' ? 'citep' : 'pandoc'
+  let api_call = 'http://127.0.0.1:23119/better-bibtex/cayw?format='.format.'&brackets=1'
+  let ref = system('curl -s '.shellescape(api_call))
+  return ref
+endfunction
+
+noremap <leader>z "=ZoteroCite()<CR>p
+inoremap <C-z> <C-r>=ZoteroCite()<CR>
