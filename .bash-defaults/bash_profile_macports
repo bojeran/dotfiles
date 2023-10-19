@@ -1,0 +1,6 @@
+# bash profile library for macports installed packages
+# namespace: ports
+
+function ports::macports {
+    export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
+}

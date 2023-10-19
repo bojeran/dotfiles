@@ -1,0 +1,8 @@
+#alias cp='cp -iv'
+#alias mv='mv -iv'
+#alias mkdir='mkdir -pv'
+alias ll='ls -FGlAhp'
+alias less='less -FSRXc'
+#alias cd..='cd ../'
+#alias ..='cd ../'
+#alias ...='cd ../../'

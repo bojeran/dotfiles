@@ -1,0 +1,107 @@
+# bash profile library for tmux
+# You might want to have different bash features in tmux session than in your standard shell environment.
+#
+# namespace: tmux
+
+function tmux::in-a-session() {
+    ( [[ -n "$TMUX" ]]; )
+    export TMUX_SESSION=$?
+}
+
+function tmux::scripting-enable {
+    # Add tmux- commands to quickly open specific workspaces which are pre setup
+    export PATH="${PATH}:${HOME}/Documents/scripts/tmux/bin"
+}
+
+
+# The following library functions allows you to automatically create
+# tmux sessions whenever you open a new terminal window.
+#
+# When no tmux session is currently attached you will get an overview and can
+# attach manually.
+#
+# Create session:
+#  - open a new terminal window
+#  -> name is automatically generated
+#  -> a color is automatically picked
+#  -> detach session with `Cmd+w` or `Ctrl+b + d`
+#  (recommended: set Cmd+w to act as Ctrl+b + d by sending Hex-code: 0x2 0x64)
+#
+# Attach session:
+#  - close/detach all terminal sessions
+#  - open new terminal window
+#  - fuzzy find your session and press enter
+function tmux::select {
+    if [[ ${IN_TMUX_SESSION_RC} -ne 0 ]]; then
+        sessions="$(tmux ls -F '#{session_name}' 2>/dev/null)"
+        if [[ -z "${sessions}" ]]; then
+            sessions="$(printf 'exit')"
+        else
+            sessions="$(printf '%s\nexit' "${sessions}")"
+        fi
+        result="$(echo "${sessions}"|fzf -e --prompt 'tmux session: ' --print-query)"
+        # does not work because xargs has wrong default behaviour for empty string in OS X
+        # result="$(tmux ls -F '#{session_name}'|xargs -0 printf '%sexit'|fzf -e --prompt 'tmux session: ' --print-query)"
+        if [[ $(echo "${result}"|wc -l) -eq 2 ]]; then
+            session_name=$(echo "${result}"|head -2|tail -1)
+        else
+            session_name="${result}"
+        fi
+
+        if { [[ "${session_name}" == "exit" ]] || [[ -z "${session_name}" ]]; } then
+            return
+        fi
+
+        ts "${session_name}"
+        tmux attach -t "$session_name" || tmux new -s "$session_name"
+        # When I just exited the tmux session (without errors then exit)
+        local rc=$?
+        if [[ ${rc} -eq 0 ]]; then
+            # when the session is within an ssh session then go run
+            exit
+            #ts NO-TMUX
+        fi
+    else
+        # inside of tmux don't do anything
+        :
+    fi
+}
+alias s=tmux::select
+
+
+function tmux::new {
+    # when not in a tmux session
+    if [[ ${IN_TMUX_SESSION_RC} -ne 0 ]]; then
+        sessions="$(tmux ls -F '#{session_name}' 2>/dev/null)"
+        # first session is always manually attached
+        if ! { tmux ls|grep attached; } && [[ -n "$sessions" ]]; then
+            tmux::select
+            return
+        fi
+
+        # brew install rust
+        # cargo install names
+        session_name="$(names)"
+        # fallback to old manual selection method
+        if { echo "${sessions}" | grep "${session_name}" &>/dev/null; } || [[ -z "${session_name}" ]]; then
+            tmux::select
+            return
+        fi
+
+        ts "${session_name}"
+        tmux attach -t "$session_name" || tmux new -s "$session_name"
+        # tmux runs now in foreground
+
+        # when you exit the tmux session then it continues here
+        local rc=$?
+        echo $rc
+        if [[ ${rc} -eq 0 ]]; then
+            # when the session is within an ssh session then go run
+            exit
+            #ts NO-TMUX
+        fi
+    fi
+}
+alias t=tmux::new
+
+

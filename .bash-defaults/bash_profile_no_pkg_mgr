@@ -1,0 +1,8 @@
+# bash profile library for non-package-manager installed packages
+
+
+
+function profile::fswatch-scripting-enable {
+    # Add fswatch-do script which simplifies the usage of fswatch
+    export PATH="${PATH}:${HOME}/Documents/scripts/fswatch/bin"
+}

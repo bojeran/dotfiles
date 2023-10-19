@@ -1,0 +1,11 @@
+# bash library for packages installed via npm
+# namespace: npm
+
+
+
+function npm::tabset() {
+    # https://www.npmjs.com/package/iterm2-tab-set
+    # make sure to install it via npm globally WITHOUT nvm enabled
+    # brew install npm && npm install -g iterm2-tab-set
+    alias ts='tabset'
+}

@@ -1,0 +1,56 @@
+
+# common bash functionality without any dependencies
+
+# namespace: common
+
+
+function common::set-default-editor {
+    ( command -v $1 &>/dev/null; ) && export EDITOR="$1"
+}
+
+function common::history-security {
+    # explanation of `export HISTCONTROL="erasedups:ignorespace"`:
+    #
+    # 1. removes duplicate entries from history
+    #
+    # 2. prepended space " " will not be added to history, for example:
+    #
+    #     Your-PC:~ name$  sshpass "blabla" | ssh ...
+
+    export HISTCONTROL="$1"
+}
+
+function common::overwrite-locale {
+    # Run `locale` to get an overview.
+    # Applications in the terminal that use special characters
+    # such as "decimal point character", "currency symbol", ...
+    # can be messed up in your location.
+    # (Seen it before with applications based on urwid)
+    # Setting the locale to en_US.UTF-8 for every system forces
+    # a consistent and safe behaviour especially for TUI
+    # applications. Some terminals do some locale magic on their own.
+    export LC_CTYPE=en_US.UTF-8
+    export LC_ALL=en_US.UTF-8
+    export LANG=en_US.UTF-8
+}
+
+function common::user-scoped-scripts-enable {
+    # Your own user scoped scripts for SHELL invocation purposes
+    # $HOME/.local/bin is the standard location for such scripts
+    if [[ -d "${HOME}/.local/bin" ]]; then
+        export PATH="${PATH}:${HOME}/.local/bin"
+    fi
+}
+
+function common::title {
+    echo -ne "\033]0;"$*"\007"
+}
+# overwrite this alias when you want to overwrite it with your own title
+alias title=common::title
+
+
+function common::narrow {
+    export PS1="\h:\W \u\n\$ "
+}
+alias n=common::narrow
+
