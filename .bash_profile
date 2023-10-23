@@ -36,10 +36,21 @@ source "${BASH_LIBRARY_LOCATION}/common_helper" || { echo "bash profile helper n
 # environments below whether that command exists and when found, loads the
 # environment automatically for you and executes the command.
 # Make sure a function exists named: "env::${ENV}" e.g. "env::brew".
-# Put the more specialized environments first before you put the more general ones.
-# For example when you have nodejs installed via homebrew AND via nvm YOU want
-# the node from NVM first. Same for python.
-declare -a AUTO_CHECK_ENVS=( "nvm" "cargo" "pyenv" "brew" )
+#
+# Chicken/Egg problem: When you put the more generic environment such as homebrew first then
+# it will find homebrew's 'node command' first before it tries the NVM environment.
+# However, when you put NVM before homebrew. You have the problem that they load
+# homebrew as dependency and therefore find ALL homebrew installed packages also
+# in the NVM environment, even when it is not part of NVM.
+
+# Solution: Load all environments and do some logic. Assume the more generic
+#           environments being in the front. The first environment that has the
+#           executable will be the (default) environment for this executable.
+#           When a later environment has a different executable it will used
+#           instead aka. the (overwrite) environment. When there are
+#           multiple overwrites the last overwrite will be used.
+
+declare -a AUTO_CHECK_ENVS=( "brew" "brew-nvm" "brew-cargo" "brew-pyenv" )
 
 if helper::source-bash "${BASH_LIBRARY_LOCATION}/common_lazy_loading"; then
   : "Lazy loading makes the terminal super snappy (first time running some commands takes a little longer)"
