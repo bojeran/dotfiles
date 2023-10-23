@@ -1,4 +1,4 @@
-function env::docker {
+function env::brew-docker {
     env::brew  # dependency
 
     # To activate docker on MacOS you usually use following command:

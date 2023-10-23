@@ -1,5 +1,5 @@
 
-function env::nvm {
+function env::brew-nvm {
     env::brew  # dependency
     # ??
     export NVM_DIR="$HOME/.nvm"

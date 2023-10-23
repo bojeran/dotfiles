@@ -19,7 +19,7 @@ function lazy::write_run_command() {
 # runs in a subshell
 # not PROMPT_COMMAND afterwards
 command_not_found_handle() {
-    local auto_check_env
+    local auto_check_env found_envs found_path found_rc last_found_path use_environment
 
     # quick load for "big programs that change the shell behaviour"
     if [[ "$(type -t "env::$1")" == "function" ]]; then
@@ -30,14 +30,44 @@ command_not_found_handle() {
 
     # slow load for commands that are in one of the environments
     # TODO: build hash table in the background (for quick load)
+    declare -A found_envs
+    use_environment=""
     for auto_check_env in ${AUTO_CHECK_ENVS[@]}; do
-        echo "Looking for command in ${auto_check_env} environment."
-        if ( "env::${auto_check_env}"; which "$1" &> /dev/null; ); then
-            lazy::write_load_env "${auto_check_env}"
-            lazy::write_run_command "$@"
-            return "0"
+        echo -n "Looking for command in ${auto_check_env} environment."
+        found_path=$( "env::${auto_check_env}" &>/dev/null; which "$1"; )
+        found_rc=$?
+        if [[ ${found_rc} -eq 0 ]]; then
+            echo -n " >>> ${found_path}"
+            #found_envs+=("${auto_check_env}")
+            found_envs["${auto_check_env}"]="${found_path}"
+            #lazy::write_load_env "${auto_check_env}"
+            #lazy::write_run_command "$@"
+            #return "0"
+            # find the most specific one, when the specific one is different
+            if [[ "${found_path}" != "${remember_found_path}" ]]; then
+                if [[ ${#found_envs[@]} -eq 1 ]]; then
+                    echo -n " (default)"
+                    remember_found_path="${found_path}"
+                elif [[ ${#found_envs[@]} -gt 1 ]]; then
+                    echo -n " (overwrite)"
+                fi
+                use_environment="${auto_check_env}"
+            fi
         fi
+        echo ""
     done
+
+    if [[ ${#found_envs[@]} -gt 0 ]]; then
+       lazy::write_load_env "${use_environment}"
+       lazy::write_run_command "$@"
+       return "0"
+    #elif [[ ${#found_envs[@]} -gt 1 ]]; then
+    #    echo "Findings in multiple environments!"
+    #    #for found_env in ${!found_envs[@]}; do
+    #    #done
+    #    return 127
+    fi
+
     echo "Not found in any AUTO_CHECK_ENV. Exit."
     return "127"
 }

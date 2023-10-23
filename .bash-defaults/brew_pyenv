@@ -1,4 +1,4 @@
-function env::pyenv {
+function env::brew-pyenv {
     env::brew  # dependency
 
     eval "$(pyenv init -)"
