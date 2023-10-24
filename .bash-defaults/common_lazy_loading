@@ -5,7 +5,8 @@ PROMPT_COMMAND_FILE="${HOME}/.command_not_found"
 
 # magic variables (bash special purpose variables)
 #
-PROMPT_COMMAND='[[ -f "${PROMPT_COMMAND_FILE}" ]] && { source "${PROMPT_COMMAND_FILE}";rm "${PROMPT_COMMAND_FILE}"; }'
+#PROMPT_COMMAND='[[ -f "${PROMPT_COMMAND_FILE}" ]] && { source "${PROMPT_COMMAND_FILE}";rm "${PROMPT_COMMAND_FILE}"; }'
+PROMPT_COMMAND='[[ -f "${PROMPT_COMMAND_FILE}" ]] && { cp "${PROMPT_COMMAND_FILE}" "${PROMPT_COMMAND_FILE}-temp";rm "${PROMPT_COMMAND_FILE}";source "${PROMPT_COMMAND_FILE}-temp";rm "${PROMPT_COMMAND_FILE}-temp"; }'
 
 function lazy::write_load_env() {
     echo "Loading environment: '[$1]'."
