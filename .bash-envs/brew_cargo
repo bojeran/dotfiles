@@ -8,6 +8,9 @@ function env::brew-cargo {
 
     if common::prompt-string-contains "[cargo]"; then return 0; fi
 
+    # not installed check
+    if [[ ! -s "/opt/homebrew/bin/cargo" ]]; then return 1; fi
+
     export PATH="${HOME}/.cargo/bin:$PATH"
 
     if ! which cargo &>/dev/null; then return 1; fi
