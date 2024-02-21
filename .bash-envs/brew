@@ -8,6 +8,9 @@ function env::brew {
     # prevent multiple imports
     if which brew &>/dev/null; then return 0; fi
 
+    # Don't do anything when homebrew is not installed
+    if [[ ! -s "/opt/homebrew/bin/brew" ]]; then return 1; fi
+
     eval "$(/opt/homebrew/bin/brew shellenv)"
 
     # did the loading work?

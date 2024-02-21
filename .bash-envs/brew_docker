@@ -1,3 +1,5 @@
+# needs validation
+
 function env::brew-docker {
     env::brew  # dependency
 
@@ -5,6 +7,10 @@ function env::brew-docker {
     # if which docker &>/dev/null; then return 0; fi
     # Checking the prompt-string instead
     if common::prompt-string-contains "[docker]"; then return 0; fi
+
+    # installed check
+    if ! which docker-machine &> /dev/null; then return 1; fi
+    if ! which docker &> /dev/null; then return 1; fi
 
     # To activate docker on MacOS you usually use following command:
     #
@@ -18,7 +24,7 @@ function env::brew-docker {
     export DOCKER_CERT_PATH={{ .HostOptions.AuthOptions.StorePath }}
     export DOCKER_MACHINE_NAME=${DOCKER_MACHINE_NAME}")
 
-    if ! which docker &>/dev/null; then return 1; fi
+    # todo: verify check
 
     common::prompt-string-add '[docker]'
 }
