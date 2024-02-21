@@ -1,0 +1,7 @@
+function env::local-bin {
+    if common::prompt-string-contains "[local-bin]"; then return 0; fi
+
+    export PATH="${PATH}:${HOME}/.local/bin"
+
+    common::prompt-string-add '[local-bin]'
+}

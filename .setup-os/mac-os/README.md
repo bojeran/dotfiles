@@ -17,6 +17,7 @@
     - iterm2: General -> Magic -> Advanced GPU Settings -> Uncheck Disable GPU
       renderer when disconnected from power
     - iterm2: Profiles -> Hotkey Window -> Keys -> General -> Uncheck "A hotkey opens a dedicated window with this profile"
+    - `touch "${HOME}/.hushlogin"`: Remove "last logged in message" whenever you open a login-shell.
   - [Install homebrew](https://brew.sh/)
   - Optionally: [Install MacPorts](https://www.macports.org/install.php)
     - Needed for clean `sshpass` installation because homebrew does not allow the installation of homebrew because of politics (forces user to use untrustworthy and unmaintained git repos instead). Note: `sshpass` is needed in some automation scenarios. for example: An `ansible playbook` that uses the `ansible_password` option to connect to the target host. (`ansible_password` might be encrypted with `ansible-vault encrypt_string`). Some targets (such as Windows systems) make it difficult to use `public key authentication` (for example when using free MobaSSH). Consider using `win_openssh` ansible module to install OpenSSH on Windows to be able to use public key authentication instead. (Manual installation can be painful)

@@ -2,9 +2,15 @@
 # namespace: cargo
 
 function env::brew-cargo {
-    env::brew  # dependency
+    env::brew || return 1  # dependency
     # brew install rust
     # e.g. cargo install names
+
+    if common::prompt-string-contains "[cargo]"; then return 0; fi
+
     export PATH="${HOME}/.cargo/bin:$PATH"
-    PS1="${PS1}[cargo] "
+
+    if ! which cargo &>/dev/null; then return 1; fi
+
+    common::prompt-string-add '[cargo]'
 }

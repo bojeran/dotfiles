@@ -9,11 +9,15 @@ PROMPT_COMMAND_FILE="${HOME}/.command_not_found"
 PROMPT_COMMAND='[[ -f "${PROMPT_COMMAND_FILE}" ]] && { cp "${PROMPT_COMMAND_FILE}" "${PROMPT_COMMAND_FILE}-temp";rm "${PROMPT_COMMAND_FILE}";source "${PROMPT_COMMAND_FILE}-temp";rm "${PROMPT_COMMAND_FILE}-temp"; }'
 
 function lazy::write_load_env() {
-    echo "Loading environment: '[$1]'."
-    echo "env::$1" > "${PROMPT_COMMAND_FILE}"
+    #echo "Loading environment: '[$1]'."
+    echo "echo \"Loading environment: '[$1]'.\"" > "${PROMPT_COMMAND_FILE}"
+    echo "env::$1" >> "${PROMPT_COMMAND_FILE}"
 }
 
 function lazy::write_run_command() {
+    # Check if the command exists before running
+    # because some environments do not have binary named as the env
+    echo "if ! which \"$1\"; then return 0; fi" >> "${PROMPT_COMMAND_FILE}"
     echo "$@" >> "${PROMPT_COMMAND_FILE}"
 }
 
@@ -21,6 +25,11 @@ function lazy::write_run_command() {
 # not PROMPT_COMMAND afterwards
 command_not_found_handle() {
     local auto_check_env found_envs found_path found_rc last_found_path use_environment
+
+    # Fix an issue where command_not_found_handle is called for defined functions
+    #if [[ "$(type -t "$1")" == "function" ]]; then
+    #    return "0"
+    #fi
 
     # quick load for "big programs that change the shell behaviour"
     if [[ "$(type -t "env::$1")" == "function" ]]; then

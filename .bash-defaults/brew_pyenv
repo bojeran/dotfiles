@@ -1,8 +1,0 @@
-function env::brew-pyenv {
-    env::brew  # dependency
-
-    eval "$(pyenv init -)"
-    if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
-
-    PS1="${PS1}[pyenv] "
-}

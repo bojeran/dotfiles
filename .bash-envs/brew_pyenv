@@ -1,0 +1,11 @@
+function env::brew-pyenv {
+    env::brew || return 1  # dependency
+
+    # if which pyenv &>/dev/null; then return 1; fi
+    if common::prompt-string-contains "[pyenv]"; then return 0; fi
+
+    eval "$(pyenv init -)"
+    if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
+
+    common::prompt-string-add '[pyenv]'
+}
