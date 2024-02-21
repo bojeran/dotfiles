@@ -1,0 +1,15 @@
+# bash profile library for macports installed packages
+# namespace: ports
+
+function env::macports {
+    # prevent multiple imports
+    if which ports &>/dev/null; then return; fi
+
+    export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
+
+    # No macports found
+    if ! which ports &>/dev/null; then echo "NO ports found. Not installed?" && return 1; fi
+
+    common::prompt-string-add '[macports]'
+}
+

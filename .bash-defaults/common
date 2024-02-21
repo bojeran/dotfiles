@@ -48,9 +48,20 @@ function common::title {
 # overwrite this alias when you want to overwrite it with your own title
 alias title=common::title
 
-
 function common::narrow {
     export PS1="\h:\W \u\n\$ "
 }
 alias n=common::narrow
 
+function common::prompt-string {
+    PS1="${1}"
+}
+
+function common::prompt-string-add {
+    PS1="${PS1::-3}${1}"'\$ '
+}
+
+function common::prompt-string-contains {
+    if [[ "${PS1@P}" == *"${1}"* ]]; then return 0; fi
+    return 1
+}

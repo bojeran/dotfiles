@@ -7,7 +7,7 @@
 # Using a `.bash_profile` from a git repository has often the reason to be able
 # to update the file later on.
 # - You probably will never run the update
-# - The update will probably a merge-conflict nightmare
+# - The update will probably cause a merge-conflict nightmare
 # - ...
 
 ###########################
@@ -22,12 +22,13 @@
 # To get different behaviour depending on when you are in a tmux session or not
 # tmux::is_this_a_tmux_session
 
-BASH_LIBRARY_LOCATION="${HOME}/.bash-defaults"
+BASH_DEFAULTS_LOCATION="${HOME}/.bash-defaults"
+BASH_ENVS_LOCATION="${HOME}/.bash-envs"
 
 ############
 ### helper
 
-source "${BASH_LIBRARY_LOCATION}/common_helper" || { echo "bash profile helper not found."; sleep 10; exit 1; }
+source "${BASH_DEFAULTS_LOCATION}/common_helper" || { echo "bash profile helper not found."; sleep 10; exit 1; }
 
 ###########################################
 ### FEATURE: lazy loading commands/envs
@@ -50,9 +51,9 @@ source "${BASH_LIBRARY_LOCATION}/common_helper" || { echo "bash profile helper n
 #           instead aka. the (overwrite) environment. When there are
 #           multiple overwrites the last overwrite will be used.
 
-declare -a AUTO_CHECK_ENVS=( "brew" "brew-nvm" "brew-cargo" "brew-pyenv" )
+declare -a AUTO_CHECK_ENVS=( "local-bin" "brew" "brew-nvm" "brew-cargo" "brew-pyenv" "macports" )
 
-if helper::source-bash "${BASH_LIBRARY_LOCATION}/common_lazy_loading"; then
+if helper::source-bash "${BASH_DEFAULTS_LOCATION}/common_lazy_loading"; then
   : "Lazy loading makes the terminal super snappy (first time running some commands takes a little longer)"
   # uses special bash method "command_not_found_handle"; Do not shadow/overwrite!
 fi
@@ -60,39 +61,71 @@ fi
 ############
 ### common
 
-if helper::source-bash "${BASH_LIBRARY_LOCATION}/common"; then
+if helper::source-bash "${BASH_DEFAULTS_LOCATION}/common"; then
+    #common::prompt-string '\h:\W \u\$ '  # default macOS
+    common::prompt-string '\W \$ '
+
     common::history-security "erasedups:ignorespace"
 
     # Change the following to your preferred editor (usually: vim or nano)
     common::set-default-editor vim
 fi
 
+if helper::source-bash "${BASH_DEFAULTS_LOCATION}/common_shadows"; then
+    : "shadow counter initialized"
+else
+    alias common::register-shadow=":"
+fi
+
 
 ###################
-### environments
+### environments & shadowing binaries
 
-if helper::source-bash "${BASH_LIBRARY_LOCATION}/brew"; then
-  : "loaded"
+if helper::source-bash "${BASH_ENVS_LOCATION}/local_bin"; then
+  : "No shadowing needed"
 fi
 
-if helper::source-bash "${BASH_LIBRARY_LOCATION}/brew_cargo"; then
-  : "loaded"
+if helper::source-bash "${BASH_ENVS_LOCATION}/brew"; then
+  : "Partially load brew environment : SHADOWING EXISTING COMMANDS"
+  brew::coreutils && common::register-shadow
+  brew::gnu-sed && common::register-shadow
+  # brew::gnu-getopt  # can cause issues
+  brew::ncurses && common::register-shadow
+  brew::bash && common::register-shadow
+
+  : "shadow and non-shadow commands"
+  brew::man-db && common::register-shadow
+
+  : "Partially load brew environment : NON-SHADOWING"
+  : "None"
 fi
 
-if helper::source-bash "${BASH_LIBRARY_LOCATION}/brew_nvm"; then
-  : "loaded"
+if helper::source-bash "${BASH_ENVS_LOCATION}/brew_cargo"; then
+  : "No shadowing needed"
 fi
 
-if helper::source-bash "${BASH_LIBRARY_LOCATION}/brew_pyenv"; then
-  : "loaded"
+if helper::source-bash "${BASH_ENVS_LOCATION}/brew_nvm"; then
+  : "No shadowing needed"
 fi
 
+if helper::source-bash "${BASH_ENVS_LOCATION}/brew_pyenv"; then
+  : "No shadowing needed"
+fi
+
+if helper::source-bash "${BASH_ENVS_LOCATION}/macports"; then
+  : "No shadowing needed"
+fi
+
+
+######################
+### feature: show shadow counter
+common::show-shadow-counter-in-title
 
 
 
 ######################
 ### feature: .bash_profile new content checker
-if helper::source-bash "${BASH_LIBRARY_LOCATION}/common_new_content"; then
+if helper::source-bash "${BASH_DEFAULTS_LOCATION}/common_new_content"; then
   if common::bash_profile_content_check; then
     echo "New content detected in the .bash_profile"
     echo "Please check and EDIT"
@@ -100,6 +133,13 @@ if helper::source-bash "${BASH_LIBRARY_LOCATION}/common_new_content"; then
 fi
 
 
+# ! For every new `export PATH` you have to:
+#    - create an environment under .bash-envs
+#    - source the the created environment under the above environments section.
+#    - add the environment under "AUTO_CHECK_ENVS"
+#   -> See `$HOME/.bash-envs/local_bin` as simple example.
+
+# DON'T DO: export PATH=.... see above
 
 # DO NOT REMOVE THIS LINE - NEW CONTENT CHECK
 #asdf

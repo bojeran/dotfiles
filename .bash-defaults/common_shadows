@@ -1,0 +1,23 @@
+
+
+# global variables (no change needed)
+#
+COMMON_SHADOW_COUNTER=0
+
+function common::register-shadow {
+    ((COMMON_SHADOW_COUNTER++))
+
+    #if [[ -z "${COMMON_SHADOWS["${1}"]}" ]]; then
+    #    COMMON_SHADOWS["${1}"]="0"
+    #else
+    #    ((COMMON_SHADOWS["${1}"]++))
+    #fi
+    return 0
+}
+
+
+function common::show-shadow-counter-in-title {
+    common::title "shadows: ${COMMON_SHADOW_COUNTER}"
+    return 0
+}
+
