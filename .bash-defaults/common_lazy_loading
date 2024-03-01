@@ -44,10 +44,10 @@ command_not_found_handle() {
     use_environment=""
     for auto_check_env in ${AUTO_CHECK_ENVS[@]}; do
         echo -n "Looking for command in ${auto_check_env} environment."
-        found_path=$( "env::${auto_check_env}" &>/dev/null; which "$1"; )
+        found_path=$( "env::${auto_check_env}" &>/dev/null; which "$1" || type -t "$1"; )
         found_rc=$?
         if [[ ${found_rc} -eq 0 ]]; then
-            echo -n " >>> ${found_path}"
+            echo -n " >>> ${found_path:-defined function found}"
             #found_envs+=("${auto_check_env}")
             found_envs["${auto_check_env}"]="${found_path}"
             #lazy::write_load_env "${auto_check_env}"
