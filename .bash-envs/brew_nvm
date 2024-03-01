@@ -12,7 +12,9 @@ function env::brew-nvm {
     [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
     # end - copy-pasted block
 
-    if ! which nvm &>/dev/null; then return 1; fi
+    # Doesn't work as NVM is not in PATH but only available as function
+    # if ! which nvm &>/dev/null; then return 1; fi
+    if [[ "$(type -t "nvm")" != "function" ]]; then return 1; fi
 
     common::prompt-string-add '[nvm]'
 }
