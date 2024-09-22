@@ -1,336 +1,181 @@
 
-# ! Scroll to the bottom and comment in the function calls you like
-#    - functions are used because of performance reasons
-#      (not used function definitions do not cost a lot of performance)
+# REASONING
 
+#######################################
+## - - DO NOT SYMLINK THIS FILE - - ###
+# A .bash_profile file is supposed to be changed by the user at ANYTIME.
+# Using a `.bash_profile` from a git repository has often the reason to be able
+# to update the file later on.
+# - You probably will never run the update
+# - The update will probably cause a merge-conflict nightmare
+# - ...
 
-function profile::homebrew {
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-}
+###########################
+### - - PERFORMANCE - - ###
+# As a snappy terminal is one of the most important things (see README) the
+# following decisions were made:
+# Use a lot of function definitions as they do not cost a lot of execution time
+# AND do not run ALL of them everytime you start a new terminal session.
 
+####################
+### - - TMUX - - ###
+# To get different behaviour depending on when you are in a tmux session or not
+# tmux::is_this_a_tmux_session
 
-function profile::macports {
-    export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
-}
+BASH_DEFAULTS_LOCATION="${HOME}/.bash-defaults"
+BASH_ENVS_LOCATION="${HOME}/.bash-envs"
 
+############
+### helper
 
-function profile::cargo {
-    # brew install rust
-    # e.g. cargo install names
-    export PATH="${HOME}/.cargo/bin:$PATH"
-}
+source "${BASH_DEFAULTS_LOCATION}/common_helper" || { echo "bash profile helper not found."; sleep 10; exit 1; }
 
-
-function profile::history-security {
-    # 1. prepended space " " will not be added to history, for example:
-    #
-    #     Your-PC:~ name$  sshpass "blabla" | ssh ...
-    #
-    # 2. removes duplicate entries from history
-
-    export HISTCONTROL=erasedups:ignorespace
-}
-
-
-function profile::iterm2-shell-integration {
-    # See: https://iterm2.com/documentation-shell-integration.html
-    test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
-}
-
-
-function profile::bash-completion {
-    # brew info bash-completion@2
-    [[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]] && . "/opt/homebrew/etc/profile.d/bash_completion.sh"
-}
-
-
-function profile::gnu-coreutils {
-    # brew info coreutils
-    export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
-}
-
-
-function profile::gnu-sed {
-    # brew info gnu-sed
-    export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
-}
-
-
-function profile::soft-upgrade-ncurses {
-    # As MacOS comes with an old version of ncurses that can lead to various
-    # issues. This commands adds the latest version of ncurses in front to
-    # preinstalled version.
-    # brew info ncurses
-    export PATH="/usr/local/opt/ncurses/bin:$PATH"
-}
-
-function profile::various-aliases {
-    alias cp='cp -iv'
-    alias mv='mv -iv'
-    alias mkdir='mkdir -pv'
-    alias ll='ls -FGlAhp'
-    alias less='less -FSRXc'
-    alias cd..='cd ../'
-    alias ..='cd ../'
-    alias ...='cd ../../'
-}
-
-
-function profile::set-encoding {
-    # The following allows you to see UTF-8 with urwid.
-    export LC_CTYPE=en_US.UTF-8
-    export LC_ALL=en_US.UTF-8
-    export LANG=en_US.UTF-8
-}
-
-
-function profile::set-default-editor {
-    # Change the following to your preferred editor (usually: vim or nano)
-    export EDITOR="vim"
-}
-
-
-function profile::user-scoped-scripts-enable {
-    # Your own user scoped scripts for SHELL invocation purposes
-    export PATH="${PATH}:${HOME}/.local/bin"
-}
-
-
-function profile::keychain-scripting-enable {
-    # add scripting capabilities for osx keychain
-    # WARNING: might be dangerous if done wrong
-    # Add keys: security add-generic-password -s machine -a root -w PaSSW0rd
-    # Get User (root): keychain.sh -u -s google
-    # Get password: keychain.sh -p -s google
-    export PATH=$PATH:${HOME}/Documents/scripts/keychain/bin
-}
-
-
-function profile::fswatch-scripting-enable {
-    # Add fswatch-do script which simplifies the usage of fswatch
-    export PATH=${PATH}:${HOME}/Documents/scripts/fswatch/bin
-}
-
-
-function profile::tmux-scripting-enable {
-    # Add tmux- commands to quickly open specific workspaces which are pre setup
-    export PATH=$PATH:${HOME}/Documents/scripts/tmux/bin
-}
-
-
-function profile::fzf-enable {
-    # brew info fzf
-    [ -f ~/.fzf.bash ] && source ~/.fzf.bash
-}
-
-
-function profile::glyphs {
-    # codepoints for glyphs
-    . ${HOME}/Documents/git/awesome-terminal-fonts/build/devicons-regular.sh
-    . ${HOME}/Documents/git/awesome-terminal-fonts/build/fontawesome-regular.sh
-    . ${HOME}/Documents/git/awesome-terminal-fonts/build/octicons-regular.sh
-    . ${HOME}/Documents/git/awesome-terminal-fonts/build/pomicons-regular.sh
-}
-
-
-function profile::itermocil-autocompletion {
-    # brew info TomAnthony/brews/itermocil
-    complete -W "$(itermocil --list)" itermocil
-}
-
-
-# This command is not namespaced as
-function docker-enable {
-    # To activate docker on MacOS you usually use following command:
-    #
-    #    eval $(docker-machine env vbox)
-    #
-    # But this command is super slow. One fix is to use the following commands.
-    : ${DOCKER_MACHINE_NAME="vbox"}
-    eval $(docker-machine inspect ${DOCKER_MACHINE_NAME} --format \
-    "export DOCKER_HOST=tcp://{{ .Driver.IPAddress }}:2376
-    export DOCKER_TLS_VERIFY=1
-    export DOCKER_CERT_PATH={{ .HostOptions.AuthOptions.StorePath }}
-    export DOCKER_MACHINE_NAME=${DOCKER_MACHINE_NAME}")
-}
-
-
-function pyenv-enable {
-    # brew info pyenv
-    #gdate +"%T.%N" >> /tmp/pyenvA
-    eval "$(pyenv init -)"
-    if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi
-    #gdate +"%T.%N" >> /tmp/pyenvB
-}
-
-
-function nvm-enable {
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-    [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-}
-
-
-# set title from command line
-function title {
-    echo -ne "\033]0;"$*"\007"
-}
-
-
-# narrow terminal mode
-function narrow {
-    export PS1="\h:\W \u\n\$ "
-}
-alias n=narrow
-
-
-# https://www.npmjs.com/package/iterm2-tab-set
-# make sure to install it via npm globally WITHOUT nvm enabled
-# brew install npm && npm install -g iterm2-tab-set
-alias ts='tabset'
-
-
-# The following feature allows you to automatically create
-# tmux sessions whenever you open a new terminal window.
+###########################################
+### FEATURE: lazy loading commands/envs
 #
-# When no tmux session is currently attached you will get a overview and can
-# attach manually.
+# When a command is not found. The command_not_found_handle will check in all
+# environments below whether that command exists and when found, loads the
+# environment automatically for you and executes the command.
+# Make sure a function exists named: "env::${ENV}" e.g. "env::brew".
 #
-# Create session:
-#  - open a new terminal window
-#  -> name is automatically generated
-#  -> a color is automatically picked
-#  -> detach session with `Cmd+w` or `Ctrl+b + d`
-#  (recommended: set Cmd+w to act as Ctrl+b + d by sending Hex-code: 0x2 0x64)
-#
-# Attach session:
-#  - close/detach all terminal sessions
-#  - open new terminal window
-#  - fuzzy find your session and press enter
-#
+# Chicken/Egg problem: When you put the more generic environment such as homebrew first then
+# it will find homebrew's 'node command' first before it tries the NVM environment.
+# However, when you put NVM before homebrew. You have the problem that they load
+# homebrew as dependency and therefore find ALL homebrew installed packages also
+# in the NVM environment, even when it is not part of NVM.
 
+# Solution: Load all environments and do some logic. Assume the more generic
+#           environments being in the front. The first environment that has the
+#           executable will be the (default) environment for this executable.
+#           When a later environment has a different executable it will used
+#           instead aka. the (overwrite) environment. When there are
+#           multiple overwrites the last overwrite will be used.
 
-# check if we are in a tmux session (0=yes, 1=no)
-{ [[ -n "$TMUX" ]]; }
-export IN_TMUX_SESSION_RC=$?
+declare -a AUTO_CHECK_ENVS=( "local-bin" "brew" "brew-nvm" "brew-cargo" "brew-pyenv" "brew-bash-completion" "macports" "dev-envs" )
 
-
-# switch
-function tmux::select {
-    if [[ ${IN_TMUX_SESSION_RC} -ne 0 ]]; then
-        sessions="$(tmux ls -F '#{session_name}' 2>/dev/null)"
-        if [[ -z "${sessions}" ]]; then
-            sessions="$(printf 'exit')"
-        else
-            sessions="$(printf '%s\nexit' "${sessions}")"
-        fi
-        result="$(echo "${sessions}"|fzf -e --prompt 'tmux session: ' --print-query)"
-        # does not work because xargs has wrong default behaviour for empty string in OS X
-        # result="$(tmux ls -F '#{session_name}'|xargs -0 printf '%sexit'|fzf -e --prompt 'tmux session: ' --print-query)"
-        if [[ $(echo "${result}"|wc -l) -eq 2 ]]; then
-            session_name=$(echo "${result}"|head -2|tail -1)
-        else
-            session_name="${result}"
-        fi
-
-        if { [[ "${session_name}" == "exit" ]] || [[ -z "${session_name}" ]]; } then
-            return
-        fi
-
-        ts "${session_name}"
-        tmux attach -t "$session_name" || tmux new -s "$session_name"
-        # When I just exited the tmux session (without errors then exit)
-        local rc=$?
-        if [[ ${rc} -eq 0 ]]; then
-            # when the session is within an ssh session then go run
-            exit
-            #ts NO-TMUX
-        fi
-    else
-        # inside of tmux don't do anything
-        :
-    fi
-}
-alias s=tmux::select
-
-
-function tmux::new {
-    # when not in a tmux session
-    if [[ ${IN_TMUX_SESSION_RC} -ne 0 ]]; then
-        sessions="$(tmux ls -F '#{session_name}' 2>/dev/null)"
-        # first session is always manually attached
-        if ! { tmux ls|grep attached; } && [[ -n "$sessions" ]]; then
-            tmux::select
-            return
-        fi
-
-        # brew install rust
-        # cargo install names
-        session_name="$(names)"
-        # fallback to old manual selection method
-        if { echo "${sessions}" | grep "${session_name}" &>/dev/null; } || [[ -z "${session_name}" ]]; then
-            tmux::select
-            return
-        fi
-
-        ts "${session_name}"
-        tmux attach -t "$session_name" || tmux new -s "$session_name"
-        # tmux runs now in foreground
-
-        # when you exit the tmux session then it continues here
-        local rc=$?
-        echo $rc
-        if [[ ${rc} -eq 0 ]]; then
-            # when the session is within an ssh session then go run
-            exit
-            #ts NO-TMUX
-        fi
-    fi
-}
-alias t=tmux::new
-
-########################
-# SETTINGS START HERE
-
-# prereq for most stuff
-profile::homebrew
-# profile::macports
-# profile::cargo
-
-# Set this to true to enable tmux feature
-# Prereq: tmux, fzf, iterm2-tab-set (via npm), names (via cargo)
-ENABLE_TMUX_TAB=false
-
-[[ ${ENABLE_TMUX_TAB} == true ]] && tmux::new
-
-# IN TMUX: selectively enable features
-# WITHOUT TMUX: terminal with no modifications (system default)
-if [[ ${IN_TMUX_SESSION_RC} -eq 0 ]] || [[ ${ENABLE_TMUX_TAB} == false ]]; then
-    profile::history-security
-    #profile::iterm2-shell-integration
-    #profile::bash-completion
-    #profile::gnu-coreutils
-    #profile::gnu-sed
-    #profile::soft-upgrade-ncurses
-    #profile::various-aliases
-    #profile::set-encoding
-    #profile::set-default-editor
-    #profile::user-scoped-scripts-enable
-
-    # Experimental:
-    #profile::keychain-scripting-enable
-    #profile::fswatch-scripting-enable
-    #profile::tmux-scripting-enable
-    #profile::fzf-enable
-    #profile::glyphs
-    #profile::itermocil-autocompletion
-
-    tput setaf 4; echo "Commands: docker-enable, pyenv-enable, nvm-enable, narrow/n."; tput sgr 0
+if helper::source-bash "${BASH_DEFAULTS_LOCATION}/common_lazy_loading"; then
+  : "Lazy loading makes the terminal super snappy (first time running some commands takes a little longer)"
+  # uses special bash method "command_not_found_handle"; Do not shadow/overwrite!
 fi
 
-# SETTINGS END HERE
-#######################
+############
+### common
 
-#######################
-# STUFF ADDED BY EXTERNAL SCRIPTS
-# THERE SHOULD BE NOTHING BELOW THIS LINE
+if helper::source-bash "${BASH_DEFAULTS_LOCATION}/common"; then
+    #common::prompt-string '\h:\W \u\$ '  # default macOS
+    common::prompt-string '\W \$ '
+
+    common::history-security "erasedups:ignorespace"
+
+    # Change the following to your preferred editor (usually: vim or nano)
+    common::set-default-editor vim
+fi
+
+if helper::source-bash "${BASH_DEFAULTS_LOCATION}/common_shadows"; then
+    : "shadow counter initialized"
+else
+    alias common::register-shadow=":"
+fi
+
+
+###################
+### environments & shadowing binaries
+
+if helper::source-bash "${BASH_ENVS_LOCATION}/local_bin"; then
+  : "No shadowing needed"
+  alias local-bin="unalias local-bin; env::local-bin"
+  alias env::local-bin="unalias env::local-bin local-bin &>/dev/null; env::local-bin"
+fi
+
+if helper::source-bash "${BASH_ENVS_LOCATION}/brew"; then
+  : "Partially load brew environment : SHADOWING EXISTING COMMANDS"
+  brew::coreutils && common::register-shadow
+  brew::gnu-sed && common::register-shadow
+  # brew::gnu-getopt  # can cause issues
+  brew::ncurses && common::register-shadow
+  brew::bash && common::register-shadow
+
+  : "shadow and non-shadow commands"
+  brew::man-db && common::register-shadow
+
+  : "Partially load brew environment with aliases : NON-SHADOWING"
+  #brew::bash-completion@2
+  : "bash-completion implemented as environment (some completions take very long to load)"
+  #alias jq="/opt/homebrew/bin/jq"
+
+  : "Alias environment:"
+  alias brew="unalias brew &>/dev/null; env::brew"
+  alias env::brew="unalias env::brew brew jq &>/dev/null; env::brew; brew"
+
+  : "Build environments"
+  #function brew::build-solvespace {
+  #  export OpenMP_ROOT=$(brew --prefix)/opt/libomp
+  #}
+fi
+
+if helper::source-bash "${BASH_ENVS_LOCATION}/brew_cargo"; then
+  : "No shadowing needed"
+  alias cargo="unalias brew cargo &>/dev/null; env::brew-cargo"
+  alias env::brew-cargo="unalias env::brew-cargo brew cargo &>/dev/null; env::brew-cargo; cargo"
+fi
+
+if helper::source-bash "${BASH_ENVS_LOCATION}/brew_nvm"; then
+  : "No shadowing needed"
+  alias nvm="unalias brew nvm &>/dev/null; env::brew-nvm"
+  alias env::brew-nvm="unalias env::brew-nvm brew nvm &>/dev/null; env::brew-nvm; nvm"
+fi
+
+if helper::source-bash "${BASH_ENVS_LOCATION}/brew_pyenv"; then
+  : "No shadowing needed"
+  alias pyenv="unalias brew pyenv &>/dev/null; env::brew-pyenv"
+  alias env::brew-pyenv="unalias env::brew-pyenv brew pyenv &>/dev/null; env::brew-pyenv; pyenv"
+fi
+
+if helper::source-bash "${BASH_ENVS_LOCATION}/brew_bash_completion"; then
+  : "No shadowing needed"
+  alias bash-completion="unalias brew bash-completion &>/dev/null; env::brew-bash-completion"
+  alias env::bash-completion="unalias env::bash-completion brew bash-completion &>/dev/null; env::bash-completion"
+fi
+
+if helper::source-bash "${BASH_ENVS_LOCATION}/macports"; then
+  : "No shadowing needed"
+  alias macports="unalias brew macports ports &>/dev/null; env::macports"
+  alias ports="unalias ports macports &>/dev/null; env::macports"
+  alias env::macports="unalias env::macports ports macports &>/dev/null; env::macports; ports"
+fi
+
+if helper::source-bash "${BASH_ENVS_LOCATION}/dev_envs"; then
+  : "No shadowing needed"
+  alias dev="unalias dev &>/dev/null; env::dev-envs"
+  alias env::dev-envs="unalias env::dev-envs dev &>/dev/null; env::dev-envs"
+fi
+
+alias docker="echo ENVIRONMENT IS NOT ENABLED"
+
+
+######################
+### feature: show shadow counter
+common::show-shadow-counter-in-title
+
+
+
+######################
+### feature: .bash_profile new content checker
+if helper::source-bash "${BASH_DEFAULTS_LOCATION}/common_new_content"; then
+  if common::bash_profile_content_check; then
+    echo "New content detected in the .bash_profile"
+    echo "Please check and EDIT"
+  fi
+fi
+
+
+# ! For every new `export PATH` you have to:
+#    - create an environment under .bash-envs
+#    - source the the created environment under the above environments section.
+#    - add the environment under "AUTO_CHECK_ENVS"
+#   -> See `$HOME/.bash-envs/local_bin` as simple example.
+
+# DON'T DO: export PATH=.... see above
+
+# DO NOT REMOVE THIS LINE - NEW CONTENT CHECK
+#asdf

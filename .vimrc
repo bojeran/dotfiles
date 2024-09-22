@@ -108,6 +108,15 @@ nnoremap <silent> <c-k> :call TmuxMove('k')<cr>
 nnoremap <silent> <c-l> :call TmuxMove('l')<cr>
 
 
+" NETRW config (its a built-in plugin)
+let g:netrw_banner=0         " disable the top banner ???
+let g:netrw_browse_split=4   " ???
+let g:netrw_altv=1           " open splits to the right
+let g:netrw_liststyle=3      " tree view
+" let g:netrw_winsize=25       " minimum 25 size?
+let g:netrw_preview=1        " split preview to the right (pressing enter)
+
+
 
 " Zotero integration
 " source: https://retorque.re/zotero-better-bibtex/citing/cayw/

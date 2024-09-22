@@ -17,6 +17,7 @@
     - iterm2: General -> Magic -> Advanced GPU Settings -> Uncheck Disable GPU
       renderer when disconnected from power
     - iterm2: Profiles -> Hotkey Window -> Keys -> General -> Uncheck "A hotkey opens a dedicated window with this profile"
+    - `touch "${HOME}/.hushlogin"`: Remove "last logged in message" whenever you open a login-shell.
   - [Install homebrew](https://brew.sh/)
   - Optionally: [Install MacPorts](https://www.macports.org/install.php)
     - Needed for clean `sshpass` installation because homebrew does not allow the installation of homebrew because of politics (forces user to use untrustworthy and unmaintained git repos instead). Note: `sshpass` is needed in some automation scenarios. for example: An `ansible playbook` that uses the `ansible_password` option to connect to the target host. (`ansible_password` might be encrypted with `ansible-vault encrypt_string`). Some targets (such as Windows systems) make it difficult to use `public key authentication` (for example when using free MobaSSH). Consider using `win_openssh` ansible module to install OpenSSH on Windows to be able to use public key authentication instead. (Manual installation can be painful)
@@ -57,7 +58,8 @@
     "Application in terminal may change title". 
     - Try with: `tabset` (make sure nvm is enabled)
 
-  - `brew install fzf`
+  - `brew install fzf` (optional)
+  - `brew install watch` (recommended)
   - `brew install tmux`
     - copy .tmux.conf to $HOME/.tmux.conf (no changes required)
   - ENABLE_TMUX_TAB=true in .bash_profile
@@ -193,3 +195,45 @@
 - Docker (see `.bash_profile` included in this project)
 
 - Go through `https://privacy.sexy` for macOS.
+
+- NEEDS REWORK BECAUSE ITS SLOW AND THE SHORTCUT DOESN'T WORK: Shift+CMD+N create folder in Finder in current directory instead of top level.
+  - Automator -> Quick Action
+    1. Workflow receives **current folders** in **Finder.app**
+    1. Run Applescript (Source: https://apple.stackexchange.com/questions/169636/how-can-i-create-a-folder-in-the-current-directory-in-list-view):
+
+       ```AppleScript
+       on run {input, parameters}
+           
+           set SELECTED_FOLDER to (input as text)
+           
+           # prompt for new folder name
+           set NEW_FOLDER_NAME to text returned of (display dialog "Name of new folder?" buttons {"Cancel", "OK"} default button "OK" default answer "")
+           delay 0.1 # prevent UI race conditions
+           
+           # create new folder 
+           tell application "Finder"
+               set NEW_FOLDER to make new folder at SELECTED_FOLDER with properties {name:NEW_FOLDER_NAME}
+           end tell
+           
+           # expand new folder 
+           tell application "Finder"
+               set selection to SELECTED_FOLDER
+               activate # need to activate before sending keystroke
+           end tell
+           tell application "System Events"
+               # requires System Preferences > Security & Privacy > Privacy > Accessibility: add Finder.app
+               key code 124 # right arrow to expand folder
+               delay 0.1 # prevent UI race conditions
+           end tell
+           
+           # select new folder
+           tell application "Finder"
+               set selection to NEW_FOLDER
+           end tell
+           
+           return input
+       end run
+       ```
+    1. Click **hammer icon** above AppleScript.
+    1. Save as: "better-create-new-folder".
+    1. System Preferences > Privacy & Security > Accessibility > Add `/System/Library/CoreServices/Finder.app`.

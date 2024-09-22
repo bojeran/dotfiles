@@ -1,9 +1,14 @@
 # dotfiles
 
 Look into this repository when you care about the importance of following features, in this order:
- - load-time (>implies snappy terminal behaviour)
+ - clean-terminal-every-time (>load almost NOTHING for each new terminal)
+   - load-time (>ultra snappy terminal behaviour for known commands)
+   - **lazy-loading commands** (>unknown commands are dynamically searched for)
+     - transparent (>show which environments are loaded in PS1) (>show which environment gets loaded with exact PATH)
  - no dependencies (>implies quick-deployment of the dotfiles) (>implies compatibility with WSL2, macOS, Linux)
  - don't mess with the default behaviour (>learned shortcuts work on most systems)
+
+Unfortunately lazy loading is EXPERIMENTAL AND HACKY and will probably NEVER reach stable as there are too many edge cases. It can also break the terminal completely if something is wrong requiring you to temporarily disable your bash config. But I still don't want to miss this feature and could not find a better way to implement it.
 
 You will also find setup&config instructions for: mostly macOS, a bit for Windows, little for Linux.
 
@@ -114,6 +119,14 @@ bash
 login
 ```
 
+There are also some special files:
+ - `/etc/motd`: Define a message of the day. (Often seen as first welcoming message.)
+ - `/etc/nologin`: Disallows logins (Seen frequently with no login users).
+ - `/var/run/utmpx`: Contains ALL current logins!!
+ - `/var/mail/user`: Seen with self-hosted email servers.
+ - `${HOME}/.hushlogin`: Create this empty file to make the login quiet.
+ - `/etc/pam.d/login`: PAM config
+
 ## Some interesting examples
 
 Example to start an interactive non login shell and then log in while
@@ -142,16 +155,11 @@ hello world
 - `/sbin`: Early boot apps needing root privileges e.g. `ping`.
 - `/usr/bin`: System-wide binaries e.g. `unzip`.
 - `/usr/sbin`: System-wide binaries needing root privileges e.g. `tcpdump`.
-- `/usr/local/bin`: Your own scripts which are system-wide available. Also,
-commonly used by `homebrew`.
+- `/usr/local/bin`: Your own scripts which are system-wide available.
 - `/usr/local/sbin`: Your own scripts needing root privileges.
 - `$HOME/bin`: Your own user scoped scripts. Consider using `$HOME/.local/bin`
 instead.
-- `${HOME}/.local/bin`: Your own user scoped scripts for SHELL invocation
-purposes. By using this path you maintain compatibility with systemd. This
-is something you might want for most user scoped scripts as systemd is very
-common nowadays. Recommending using this folder on macOS / FreeBSD systems
-as well (requires to add this folder to the PATH):
+- `${HOME}/.local/bin`: Your own user scoped scripts for SHELL invocation purposes. By using this path you maintain compatibility with systemd. This is something you might want for most user scoped scripts as systemd is very common nowadays. Recommending using this folder on macOS / FreeBSD systems as well (requires to add this folder to the PATH):
  
       mkdir -p "${HOME}/.local/bin"
       ln -s "/path/to/third-party/binary" "${HOME}/.local/bin"
@@ -159,3 +167,8 @@ as well (requires to add this folder to the PATH):
  
 - `$HOME/.local/lib/*/bin`: Binaries that are not intended for SHELL invocation
 and are not on the PATH. Maintaining compatibility with systemd specs.
+- XDG Base Directory Specification (Version 0.8) (used by a lot of programs)
+  - `$XDG_DATA_HOME` defaults to `$HOME/.local/share`.
+  - `$XDG_CONFIG_HOME` defaults to `$HOME/.config`.
+  - `$XDG_STATE_HOME` defaults to `$HOME/.local/state`.
+  - There are more environment variables that an application has to use and look for when this standard is implemented.

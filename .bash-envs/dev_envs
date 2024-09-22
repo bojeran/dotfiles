@@ -1,0 +1,9 @@
+function env::dev-envs {
+    if common::prompt-string-contains "[DEV]"; then return 0; fi
+
+    # Add custom development environments
+    #export PATH="${HOME}/Documents/PROJECT_UNDER_DEVELOPMENT:${PATH}"
+
+    common::prompt-string-add '[DEV]'
+}
+

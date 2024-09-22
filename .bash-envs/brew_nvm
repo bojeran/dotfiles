@@ -1,0 +1,21 @@
+
+function env::brew-nvm {
+    env::brew  # dependency
+
+    if common::prompt-string-contains "[nvm]"; then return 0; fi
+
+    if [[ ! -s "/opt/homebrew/opt/nvm/nvm.sh" ]]; then return 1; fi
+
+    # start - copy-pasted block
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+    [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+    # end - copy-pasted block
+
+    # Doesn't work as NVM is not in PATH but only available as function
+    # if ! which nvm &>/dev/null; then return 1; fi
+    if [[ "$(type -t "nvm")" != "function" ]]; then return 1; fi
+
+    common::prompt-string-add '[nvm]'
+}
+

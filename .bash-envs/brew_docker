@@ -1,0 +1,31 @@
+# needs validation
+
+function env::brew-docker {
+    env::brew  # dependency
+
+    # This is already available in homebrew?
+    # if which docker &>/dev/null; then return 0; fi
+    # Checking the prompt-string instead
+    if common::prompt-string-contains "[docker]"; then return 0; fi
+
+    # installed check
+    if ! which docker-machine &> /dev/null; then return 1; fi
+    if ! which docker &> /dev/null; then return 1; fi
+
+    # To activate docker on MacOS you usually use following command:
+    #
+    #    eval $(docker-machine env vbox)
+    #
+    # But this command is super slow. One fix is to use the following commands.
+    : ${DOCKER_MACHINE_NAME="vbox"}
+    eval $(docker-machine inspect ${DOCKER_MACHINE_NAME} --format \
+    "export DOCKER_HOST=tcp://{{ .Driver.IPAddress }}:2376
+    export DOCKER_TLS_VERIFY=1
+    export DOCKER_CERT_PATH={{ .HostOptions.AuthOptions.StorePath }}
+    export DOCKER_MACHINE_NAME=${DOCKER_MACHINE_NAME}")
+
+    # todo: verify check
+
+    common::prompt-string-add '[docker]'
+}
+

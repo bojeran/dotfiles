@@ -1,0 +1,143 @@
+# bash profile library for homebrew installed packages
+# namespace: brew
+
+
+# why not shadow brew directly?
+# Because it will mess with some checks if "brew" is available or not.
+function env::brew {
+    # prevent multiple imports
+    if which brew &>/dev/null; then return 0; fi
+
+    # Don't do anything when homebrew is not installed
+    if [[ ! -s "/opt/homebrew/bin/brew" ]]; then return 1; fi
+
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+
+    # did the loading work?
+    if ! which brew &>/dev/null; then return 1; fi
+
+    common::prompt-string-add '[brew]'
+
+    # Issue: When homebrew is loaded, the pyenv command becomes available
+    #        and therefore it won't load the pyenv environment when I type
+    #        `pyenv`. In this case you have to use env::pyenv. But this is
+    #        intended behaviour.
+}
+
+#function brew::homebrew {
+#    eval "$(/opt/homebrew/bin/brew shellenv)"
+#}
+
+
+function brew::bash-completion@2 {
+    # brew info bash-completion@2
+    [[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]] && . "/opt/homebrew/etc/profile.d/bash_completion.sh"
+}
+
+
+function brew::coreutils {
+    # brew info coreutils
+    if [[ -d "/opt/homebrew/opt/coreutils/libexec/gnubin" ]]; then
+        export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:$PATH"
+        #export PATH="/opt/homebrew/opt/coreutils/bin:$PATH"
+        return 0
+    fi
+    return 1
+}
+
+
+function brew::gnu-sed {
+    # brew info gnu-sed
+    if [[ -d "/opt/homebrew/opt/gnu-sed/libexec/gnubin" ]]; then
+        # just shadow sed with gsed (do not introduce gsed)
+        export PATH="/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH"
+        #export PATH="/opt/homebrew/opt/gnu-sed/bin:$PATH"
+        return 0
+    fi
+    return 1
+}
+
+
+function brew::gnu-getopt {
+    # brew info gnu-getopt
+    if [[ -d "/opt/homebrew/opt/gnu-getopt/libexec/gnubin" ]]; then
+        #export PATH="/opt/homebrew/opt/gnu-getopt/libexec/gnubin:$PATH"
+        export PATH="/opt/homebrew/opt/gnu-getopt/bin:$PATH"
+        return 0
+    fi
+    return 1
+}
+
+
+function brew::ncurses {
+    # As MacOS comes with an old version of ncurses that can lead to various
+    # issues. This commands adds the latest version of ncurses in front to
+    # preinstalled version.
+    # brew info ncurses
+    if [[ -d "/opt/homebrew/opt/ncurses/bin" ]]; then
+        export PATH="/opt/homebrew/opt/ncurses/bin:$PATH"
+        return 0
+    fi
+    return 1
+}
+
+
+function brew::man-db {
+    if [[ -d "/opt/homebrew/opt/man-db/libexec/bin" ]]; then
+        export PATH="/opt/homebrew/opt/man-db/bin:$PATH"
+        return 0
+    fi
+    return 1
+}
+
+
+function brew::bash {
+    # When the binary "bash" lives in a directory with multiple other binaries.
+    # This is no issue with "homebrew" but might be an issue with other package
+    # managers. As "homebrew" has an "opt" directory to only add the things
+    # to the path that are needed.
+    if [[ -d "/opt/homebrew/opt/bash/bin" ]]; then
+        export PATH="/opt/homebrew/opt/bash/bin:${PATH}"
+        return 0
+    fi
+    return 1
+
+    # In changed shell environments you can run "$SHELL" which uses the shell
+    # you use at the moment.
+    #
+    # Scripts that use the shebang: "#!/usr/bin/env bash" do not use
+    # the newer bash version when it cannot be found in PATH.
+    # They would need to load the 'brew' environment first to shadow the
+    # system bash version.
+
+    # Solution 1: The alias method does not work with the
+    # /usr/bin/env command as this command only looks for the commands in PATH.
+    # So it is only overwritten for interactive login-shells this way.
+    # alias bash="env::brew;unalias bash;bash"
+
+    # Solution 2: Always load the full 'brew'-environment. As it has little
+    # impact it might be viable.
+
+    # Solution 3: Auto create/Auto delete a symlink folder that holds the bash
+    # binary (e.g. $HOME/.bin). This would be a magic bin folder for shadow
+    # overwrites. You could say that this is a partially loaded
+    # brew environment. This is ugly as those symlinks need to be managed.
+}
+
+
+function brew::fzf {
+    # brew info fzf
+    [[ -f ~/.fzf.bash ]] && source ~/.fzf.bash
+}
+
+
+function brew::itermocil-autocompletion {
+    # brew info TomAnthony/brews/itermocil
+    complete -W "$(itermocil --list)" itermocil
+}
+
+
+
+
+
+
