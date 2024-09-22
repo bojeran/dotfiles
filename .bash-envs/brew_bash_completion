@@ -1,0 +1,9 @@
+function env::brew-bash-completion {
+    env::brew || return 1  # dependency
+
+    if common::prompt-string-contains "[comp]"; then return 0; fi
+
+    brew::bash-completion@2
+
+    common::prompt-string-add '[comp]'
+}

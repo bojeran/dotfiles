@@ -1,9 +1,14 @@
 # dotfiles
 
 Look into this repository when you care about the importance of following features, in this order:
- - load-time (>implies snappy terminal behaviour)
+ - clean-terminal-every-time (>load almost NOTHING for each new terminal)
+   - load-time (>ultra snappy terminal behaviour for known commands)
+   - **lazy-loading commands** (>unknown commands are dynamically searched for)
+     - transparent (>show which environments are loaded in PS1) (>show which environment gets loaded with exact PATH)
  - no dependencies (>implies quick-deployment of the dotfiles) (>implies compatibility with WSL2, macOS, Linux)
  - don't mess with the default behaviour (>learned shortcuts work on most systems)
+
+Unfortunately lazy loading is EXPERIMENTAL AND HACKY and will probably NEVER reach stable as there are too many edge cases. It can also break the terminal completely if something is wrong requiring you to temporarily disable your bash config. But I still don't want to miss this feature and could not find a better way to implement it.
 
 You will also find setup&config instructions for: mostly macOS, a bit for Windows, little for Linux.
 

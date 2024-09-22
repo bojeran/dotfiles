@@ -15,7 +15,7 @@
 # As a snappy terminal is one of the most important things (see README) the
 # following decisions were made:
 # Use a lot of function definitions as they do not cost a lot of execution time
-# AND do not run ALL of them everytime you start a new terminal sessions.
+# AND do not run ALL of them everytime you start a new terminal session.
 
 ####################
 ### - - TMUX - - ###
@@ -51,7 +51,7 @@ source "${BASH_DEFAULTS_LOCATION}/common_helper" || { echo "bash profile helper 
 #           instead aka. the (overwrite) environment. When there are
 #           multiple overwrites the last overwrite will be used.
 
-declare -a AUTO_CHECK_ENVS=( "local-bin" "brew" "brew-nvm" "brew-cargo" "brew-pyenv" "macports" )
+declare -a AUTO_CHECK_ENVS=( "local-bin" "brew" "brew-nvm" "brew-cargo" "brew-pyenv" "brew-bash-completion" "macports" "dev-envs" )
 
 if helper::source-bash "${BASH_DEFAULTS_LOCATION}/common_lazy_loading"; then
   : "Lazy loading makes the terminal super snappy (first time running some commands takes a little longer)"
@@ -83,6 +83,8 @@ fi
 
 if helper::source-bash "${BASH_ENVS_LOCATION}/local_bin"; then
   : "No shadowing needed"
+  alias local-bin="unalias local-bin; env::local-bin"
+  alias env::local-bin="unalias env::local-bin local-bin &>/dev/null; env::local-bin"
 fi
 
 if helper::source-bash "${BASH_ENVS_LOCATION}/brew"; then
@@ -96,25 +98,59 @@ if helper::source-bash "${BASH_ENVS_LOCATION}/brew"; then
   : "shadow and non-shadow commands"
   brew::man-db && common::register-shadow
 
-  : "Partially load brew environment : NON-SHADOWING"
-  : "None"
+  : "Partially load brew environment with aliases : NON-SHADOWING"
+  #brew::bash-completion@2
+  : "bash-completion implemented as environment (some completions take very long to load)"
+  #alias jq="/opt/homebrew/bin/jq"
+
+  : "Alias environment:"
+  alias brew="unalias brew &>/dev/null; env::brew"
+  alias env::brew="unalias env::brew brew jq &>/dev/null; env::brew; brew"
+
+  : "Build environments"
+  #function brew::build-solvespace {
+  #  export OpenMP_ROOT=$(brew --prefix)/opt/libomp
+  #}
 fi
 
 if helper::source-bash "${BASH_ENVS_LOCATION}/brew_cargo"; then
   : "No shadowing needed"
+  alias cargo="unalias brew cargo &>/dev/null; env::brew-cargo"
+  alias env::brew-cargo="unalias env::brew-cargo brew cargo &>/dev/null; env::brew-cargo; cargo"
 fi
 
 if helper::source-bash "${BASH_ENVS_LOCATION}/brew_nvm"; then
   : "No shadowing needed"
+  alias nvm="unalias brew nvm &>/dev/null; env::brew-nvm"
+  alias env::brew-nvm="unalias env::brew-nvm brew nvm &>/dev/null; env::brew-nvm; nvm"
 fi
 
 if helper::source-bash "${BASH_ENVS_LOCATION}/brew_pyenv"; then
   : "No shadowing needed"
+  alias pyenv="unalias brew pyenv &>/dev/null; env::brew-pyenv"
+  alias env::brew-pyenv="unalias env::brew-pyenv brew pyenv &>/dev/null; env::brew-pyenv; pyenv"
+fi
+
+if helper::source-bash "${BASH_ENVS_LOCATION}/brew_bash_completion"; then
+  : "No shadowing needed"
+  alias bash-completion="unalias brew bash-completion &>/dev/null; env::brew-bash-completion"
+  alias env::bash-completion="unalias env::bash-completion brew bash-completion &>/dev/null; env::bash-completion"
 fi
 
 if helper::source-bash "${BASH_ENVS_LOCATION}/macports"; then
   : "No shadowing needed"
+  alias macports="unalias brew macports ports &>/dev/null; env::macports"
+  alias ports="unalias ports macports &>/dev/null; env::macports"
+  alias env::macports="unalias env::macports ports macports &>/dev/null; env::macports; ports"
 fi
+
+if helper::source-bash "${BASH_ENVS_LOCATION}/dev_envs"; then
+  : "No shadowing needed"
+  alias dev="unalias dev &>/dev/null; env::dev-envs"
+  alias env::dev-envs="unalias env::dev-envs dev &>/dev/null; env::dev-envs"
+fi
+
+alias docker="echo ENVIRONMENT IS NOT ENABLED"
 
 
 ######################

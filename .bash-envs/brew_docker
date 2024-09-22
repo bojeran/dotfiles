@@ -28,3 +28,4 @@ function env::brew-docker {
 
     common::prompt-string-add '[docker]'
 }
+

@@ -18,7 +18,11 @@ function lazy::write_run_command() {
     # Check if the command exists before running
     # because some environments do not have binary named as the env
     echo "if ! which \"$1\"; then return 0; fi" >> "${PROMPT_COMMAND_FILE}"
-    echo "$@" >> "${PROMPT_COMMAND_FILE}"
+    #echo "echo '$@'" >> "${PROMPT_COMMAND_FILE}"
+    #echo "$@" >> "${PROMPT_COMMAND_FILE}"
+    # Escape command trick as "$@" actually removes quotes from commands and
+    # therefore commands with quoted arguments might fail otherwise.
+    printf '%q ' "$@" >> "${PROMPT_COMMAND_FILE}"
 }
 
 # runs in a subshell
@@ -28,6 +32,11 @@ command_not_found_handle() {
 
     # Fix an issue where command_not_found_handle is called for defined functions
     #if [[ "$(type -t "$1")" == "function" ]]; then
+    #    return "0"
+    #fi
+
+    # Aliases might shadow functions and commands
+    #if [[ "$(type -t "$1")" == "alias" ]]; then
     #    return "0"
     #fi
 
@@ -43,7 +52,7 @@ command_not_found_handle() {
     declare -A found_envs
     use_environment=""
     for auto_check_env in ${AUTO_CHECK_ENVS[@]}; do
-        echo -n "Looking for command in ${auto_check_env} environment."
+        echo -n "Looking for command or function in ${auto_check_env} environment."
         found_path=$( "env::${auto_check_env}" &>/dev/null; which "$1" || type -t "$1"; )
         found_rc=$?
         if [[ ${found_rc} -eq 0 ]]; then
@@ -78,6 +87,6 @@ command_not_found_handle() {
     #    return 127
     fi
 
-    echo "Not found in any AUTO_CHECK_ENV. Exit."
+    echo "'$@' not found in any AUTO_CHECK_ENV. Exit."
     return "127"
 }

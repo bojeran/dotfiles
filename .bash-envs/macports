@@ -1,13 +1,16 @@
-# bash profile library for macports installed packages
-# namespace: ports
 
 function env::macports {
-    # prevent multiple imports
     if common::prompt-string-contains "[macports]"; then return 0; fi
 
-    if ! which ports &>/dev/null; then return 1; fi
-
+    OLD_PATH="${PATH}"
     export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
+
+    if ! which ports &>/dev/null; then
+       echo "failed"
+       export PATH="${OLD_PATH}"
+       return 1
+    fi
+
 
     common::prompt-string-add '[macports]'
 }

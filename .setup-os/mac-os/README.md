@@ -58,7 +58,8 @@
     "Application in terminal may change title". 
     - Try with: `tabset` (make sure nvm is enabled)
 
-  - `brew install fzf`
+  - `brew install fzf` (optional)
+  - `brew install watch` (recommended)
   - `brew install tmux`
     - copy .tmux.conf to $HOME/.tmux.conf (no changes required)
   - ENABLE_TMUX_TAB=true in .bash_profile
@@ -194,3 +195,45 @@
 - Docker (see `.bash_profile` included in this project)
 
 - Go through `https://privacy.sexy` for macOS.
+
+- NEEDS REWORK BECAUSE ITS SLOW AND THE SHORTCUT DOESN'T WORK: Shift+CMD+N create folder in Finder in current directory instead of top level.
+  - Automator -> Quick Action
+    1. Workflow receives **current folders** in **Finder.app**
+    1. Run Applescript (Source: https://apple.stackexchange.com/questions/169636/how-can-i-create-a-folder-in-the-current-directory-in-list-view):
+
+       ```AppleScript
+       on run {input, parameters}
+           
+           set SELECTED_FOLDER to (input as text)
+           
+           # prompt for new folder name
+           set NEW_FOLDER_NAME to text returned of (display dialog "Name of new folder?" buttons {"Cancel", "OK"} default button "OK" default answer "")
+           delay 0.1 # prevent UI race conditions
+           
+           # create new folder 
+           tell application "Finder"
+               set NEW_FOLDER to make new folder at SELECTED_FOLDER with properties {name:NEW_FOLDER_NAME}
+           end tell
+           
+           # expand new folder 
+           tell application "Finder"
+               set selection to SELECTED_FOLDER
+               activate # need to activate before sending keystroke
+           end tell
+           tell application "System Events"
+               # requires System Preferences > Security & Privacy > Privacy > Accessibility: add Finder.app
+               key code 124 # right arrow to expand folder
+               delay 0.1 # prevent UI race conditions
+           end tell
+           
+           # select new folder
+           tell application "Finder"
+               set selection to NEW_FOLDER
+           end tell
+           
+           return input
+       end run
+       ```
+    1. Click **hammer icon** above AppleScript.
+    1. Save as: "better-create-new-folder".
+    1. System Preferences > Privacy & Security > Accessibility > Add `/System/Library/CoreServices/Finder.app`.

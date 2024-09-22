@@ -7,3 +7,4 @@ function env::local-bin {
 
     common::prompt-string-add '[local-bin]'
 }
+
