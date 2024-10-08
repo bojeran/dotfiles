@@ -11,7 +11,7 @@
   why AES is in the category block cipher).
   - That's why we also need a **cryptographically strong mode of operation** to encrypt plaintext of any length.
   - The mode of operation changes the strength of security here and there:
-    - Added randomness can make the overall **encryption scheme** stronger then using the plain underlying
+    - Added randomness can make the overall **encryption scheme** stronger than using the plain underlying
       block cipher.
     - Some modes of operations initially only handle plaintexts the length of which is a multiple of the 
       block size. In this case you need to add padding to the last plaintext block. Use an adequate

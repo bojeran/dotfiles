@@ -138,9 +138,10 @@
   - Desktop & Dock -> Dock: Uncheck show recent applications
   - Desktop & Dock -> Dock: Position on Screen Left
   - Desktop & Dock -> Menu Bar: Recent Documents, applications and servers -> None
-  - Desktop & Dock -> Stage Manager: yes and press customize
+  - (optional) Desktop & Dock -> Stage Manager: yes and press customize
     - Recent applications -> yes
     - Desktop items -> yes
+  - Desktop & Dock -> Windows -> Tiled windows have margins -> Off
   - Desktop & Screen Saver -> Screen Saver -> Hot Corners: Change Quick Notes to Desktop
     - Good multi desktop approach: Hold "alt" and put Desktop in all corners (prevents accidental go to desktop)
   - Finder -> Preferences -> General -> Check Hard disks
