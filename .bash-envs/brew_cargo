@@ -11,7 +11,7 @@ function env::brew-cargo {
 
     export PATH="${HOME}/.cargo/bin:$PATH"
 
-    if ! which cargo &>/dev/null; then return 1; fi
+    if ! which cargo &>/dev/null; common::prompt-string-add '[cargoErr]'; then return 1; fi
 
     common::prompt-string-add '[cargo]'
 }

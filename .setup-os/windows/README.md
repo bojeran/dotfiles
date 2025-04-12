@@ -206,6 +206,8 @@ A Rapid way of Windows 10 installation:
 
 - Set password to never expire: Win+R -> `winplwiz` -> Advanced. User -> right-click user -> properties -> Check: Password never expires.
 
+- Manually manage paging (this is swap): `Win + R` -> `sysdm.cpl` -> Advanced -> performance -> settings -> Advanced -> Change ... -> AFTER CHANGING YOU HAVE TO CLICK THE `SET` button.
+
 
 # Disk setup
 

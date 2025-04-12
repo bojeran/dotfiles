@@ -1,7 +1,7 @@
 function env::local-bin {
     if common::prompt-string-contains "[local-bin]"; then return 0; fi
 
-    if [[ ! -d "${HOME}/.local/bin" ]]; then return 1; fi
+    if [[ ! -d "${HOME}/.local/bin" ]]; then common::prompt-string-contains "[local-bin-Err]"; return 1; fi
 
     export PATH="${PATH}:${HOME}/.local/bin"
 

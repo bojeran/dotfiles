@@ -1,0 +1,13 @@
+function env::brew-java {
+    # Don't load homebrew environment as we only want java in this case
+    # env::brew  # dependency
+
+    if common::prompt-string-contains "[java]"; then return 0; fi
+
+    export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+
+    if ! which java &> /dev/null; then common::prompt-string-add '[javaErr]'; return 1; fi
+
+    common::prompt-string-add '[java]'
+}
+

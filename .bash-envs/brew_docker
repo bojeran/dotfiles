@@ -8,9 +8,14 @@ function env::brew-docker {
     # Checking the prompt-string instead
     if common::prompt-string-contains "[docker]"; then return 0; fi
 
+    function error-and-exit {
+      common::prompt-string-contains "[dockerErr]";
+      return 1;
+    }
+
     # installed check
-    if ! which docker-machine &> /dev/null; then return 1; fi
-    if ! which docker &> /dev/null; then return 1; fi
+    if ! which docker-machine &> /dev/null; then error-and-exit; fi
+    if ! which docker &> /dev/null; then error-and-exit; fi
 
     # To activate docker on MacOS you usually use following command:
     #

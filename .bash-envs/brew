@@ -9,7 +9,7 @@ function env::brew {
     if which brew &>/dev/null; then return 0; fi
 
     # Don't do anything when homebrew is not installed
-    if [[ ! -s "/opt/homebrew/bin/brew" ]]; then return 1; fi
+    if [[ ! -s "/opt/homebrew/bin/brew" ]]; then common::prompt-string-add '[brewErr]'; return 1; fi
 
     eval "$(/opt/homebrew/bin/brew shellenv)"
 

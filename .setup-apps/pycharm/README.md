@@ -17,3 +17,5 @@
     - Keymap: New... -> Ctrl+N
     - Keymap: Generate... -> Ctrl+N
     - Keymap: Tool Windows -> Project: Ctrl+1   (to mimick: Cmd+1 behaviour)
+
+- Tools -> Create Command-line launcher

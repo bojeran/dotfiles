@@ -51,7 +51,7 @@ source "${BASH_DEFAULTS_LOCATION}/common_helper" || { echo "bash profile helper 
 #           instead aka. the (overwrite) environment. When there are
 #           multiple overwrites the last overwrite will be used.
 
-declare -a AUTO_CHECK_ENVS=( "local-bin" "brew" "brew-nvm" "brew-cargo" "brew-pyenv" "brew-bash-completion" "macports" "dev-envs" )
+declare -a AUTO_CHECK_ENVS=( "local-bin" "brew" "brew-nvm" "brew-cargo" "brew-pyenv" "brew-bash-completion" "macports" "brew-go" "brew-java" "dev-envs" "nix" "nix-shell" )
 
 if helper::source-bash "${BASH_DEFAULTS_LOCATION}/common_lazy_loading"; then
   : "Lazy loading makes the terminal super snappy (first time running some commands takes a little longer)"
@@ -104,8 +104,8 @@ if helper::source-bash "${BASH_ENVS_LOCATION}/brew"; then
   #alias jq="/opt/homebrew/bin/jq"
 
   : "Alias environment:"
-  alias brew="unalias brew &>/dev/null; env::brew"
-  alias env::brew="unalias env::brew brew jq &>/dev/null; env::brew; brew"
+  alias brew="unalias brew &>/dev/null; env::brew; brew"
+  alias env::brew="unalias env::brew brew jq &>/dev/null; env::brew"
 
   : "Build environments"
   #function brew::build-solvespace {
@@ -115,20 +115,20 @@ fi
 
 if helper::source-bash "${BASH_ENVS_LOCATION}/brew_cargo"; then
   : "No shadowing needed"
-  alias cargo="unalias brew cargo &>/dev/null; env::brew-cargo"
-  alias env::brew-cargo="unalias env::brew-cargo brew cargo &>/dev/null; env::brew-cargo; cargo"
+  alias cargo="unalias brew cargo &>/dev/null; env::brew-cargo; cargo"
+  alias env::brew-cargo="unalias env::brew-cargo brew cargo &>/dev/null; env::brew-cargo"
 fi
 
 if helper::source-bash "${BASH_ENVS_LOCATION}/brew_nvm"; then
   : "No shadowing needed"
-  alias nvm="unalias brew nvm &>/dev/null; env::brew-nvm"
-  alias env::brew-nvm="unalias env::brew-nvm brew nvm &>/dev/null; env::brew-nvm; nvm"
+  alias nvm="unalias brew nvm &>/dev/null; env::brew-nvm; nvm"
+  alias env::brew-nvm="unalias env::brew-nvm brew nvm &>/dev/null; env::brew-nvm"
 fi
 
 if helper::source-bash "${BASH_ENVS_LOCATION}/brew_pyenv"; then
   : "No shadowing needed"
-  alias pyenv="unalias brew pyenv &>/dev/null; env::brew-pyenv"
-  alias env::brew-pyenv="unalias env::brew-pyenv brew pyenv &>/dev/null; env::brew-pyenv; pyenv"
+  alias pyenv="unalias brew pyenv &>/dev/null; env::brew-pyenv; pyenv"
+  alias env::brew-pyenv="unalias env::brew-pyenv brew pyenv &>/dev/null; env::brew-pyenv"
 fi
 
 if helper::source-bash "${BASH_ENVS_LOCATION}/brew_bash_completion"; then
@@ -140,14 +140,53 @@ fi
 if helper::source-bash "${BASH_ENVS_LOCATION}/macports"; then
   : "No shadowing needed"
   alias macports="unalias brew macports ports &>/dev/null; env::macports"
-  alias ports="unalias ports macports &>/dev/null; env::macports"
-  alias env::macports="unalias env::macports ports macports &>/dev/null; env::macports; ports"
+  alias ports="unalias ports macports &>/dev/null; env::macports; ports"
+  alias env::macports="unalias env::macports ports macports &>/dev/null; env::macports"
+fi
+
+if helper::source-bash "${BASH_ENVS_LOCATION}/brew_go"; then
+  : "No shadowing needed"
+  alias go="unalias go &>/dev/null; env::brew-go; go"
+  alias env::brew-go="unalias env::brew-go go &>/dev/null; env::brew-go"
+  # load go by default (for VS-Code to detect go):
+  #env::brew-go
+fi
+
+if helper::source-bash "${BASH_ENVS_LOCATION}/brew_java"; then
+  : "No shadowing needed"
+  alias java="unalias java &>/dev/null; env::brew-java; java"
+  alias env::brew-java="unalias env::brew-java java &>/dev/null; env::brew-java"
 fi
 
 if helper::source-bash "${BASH_ENVS_LOCATION}/dev_envs"; then
   : "No shadowing needed"
   alias dev="unalias dev &>/dev/null; env::dev-envs"
   alias env::dev-envs="unalias env::dev-envs dev &>/dev/null; env::dev-envs"
+fi
+
+
+if helper::source-bash "${BASH_ENVS_LOCATION}/nix"; then
+  : "No shadowing needed"
+  alias nix="unalias nix &>/dev/null; env::nix; nix"
+  alias env::nix="unalias env::nix nix &>/dev/null; env::nix"
+fi
+
+if helper::source-bash "${BASH_ENVS_LOCATION}/nix_shell"; then
+  : "THIS SHADOWS nix-shell"
+  # The following alias shadows the `nix-shell` command and changes it's behaviour slightly
+  # Examples:
+  # - `nix-shell -p BLA` -> as soon as there is a `-` or `--` in the command
+  #                         the call is passed on to the normal nix-shell cmd.
+  # - `nix-shell shell.nix` -> is affected and will be wrapped and extended
+  # - `nix-shell` (./shell.nix exists) -> is affected
+  # - `nix-shell` (./shell.nix does not exist) -> a special system-wide shell
+  #                                               environment is loaded
+
+  # to wrap every nix-shell with user specific stuff
+  # This is an intrusive experimental overwrite and doesn't take a lot of things into consideration
+  alias nix-shell="unalias nix nix-shell &>/dev/null; env::nix-shell"
+  alias env::nix-shell="unalias env::nix-shell nix nix-shell &>/dev/null; env::nix-shell"
+  common::register-shadow
 fi
 
 alias docker="echo ENVIRONMENT IS NOT ENABLED"

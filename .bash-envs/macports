@@ -8,6 +8,7 @@ function env::macports {
     if ! which ports &>/dev/null; then
        echo "failed"
        export PATH="${OLD_PATH}"
+       common::prompt-string-contains "[macportsErr]";
        return 1
     fi
 

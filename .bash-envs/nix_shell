@@ -1,0 +1,35 @@
+function env::nix-shell {
+    env::nix || return 1  # dependency
+
+    # When there is an option like argument, simply call the
+    # original nix-shell with those arguments.
+    # Those environments are not wrapped
+    for arg in "$@"; do
+      if [[ "$arg" == -* ]]; then
+        #echo "Found option-like argument: $arg"
+        nix-shell "$@"
+        return  # or set a flag, or handle it however needed
+      fi
+    done
+
+    # $1 == custom_name_for_nix_env (string)
+    # $2 == path_to_shell_nix_file (string)
+    path_to_shell_nix_file="${1:-$(pwd)/shell.nix}"
+    nix_shell_name="${2:-wrapped }"
+
+    # When the shell.nix is not found do nothing
+    if [[ ! -r "${path_to_shell_nix_file}" ]]; then
+      common::prompt-string-add "[NO shell.nix found]"
+      return 1
+    fi
+
+    nix-shell "$HOME/.bash-envs/nix-shell-wrapper.nix" --argstr ps1Prefix "${nix_shell_name}" --argstr shellPath "${path_to_shell_nix_file}"
+
+    # When you exit out of the shell the alias is gone
+    # So we replace the current bash session with a fresh new login-shell
+    # Does not seem to work through: alias -> function -> call
+    #exec bash -l
+
+    common::prompt-string-add "[no nix-shell alias]"
+}
+

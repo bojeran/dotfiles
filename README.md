@@ -172,3 +172,10 @@ and are not on the PATH. Maintaining compatibility with systemd specs.
   - `$XDG_CONFIG_HOME` defaults to `$HOME/.config`.
   - `$XDG_STATE_HOME` defaults to `$HOME/.local/state`.
   - There are more environment variables that an application has to use and look for when this standard is implemented.
+
+## Debug Shell Start
+
+- Simply start a new shell with -x enabled:
+  ```
+  bash -xl
+  ```

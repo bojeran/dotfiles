@@ -5,7 +5,6 @@
     "vim.useCtrlKeys": true,
     "vim.hlsearch": true,
     "vim.insertModeKeyBindings": [
-        // this binds jj to <ESC>
         {
             "before": [
                 "j",
@@ -27,11 +26,11 @@
         }
     ],
     "vim.leader": ",",
-    // let vs code handle those key combs
     "vim.handleKeys": {
         "<C-a>": false,
         "<C-f>": false
     },
+
     "latex-workshop.latex.recipes": [
         {
             "name": "latexmk 🔃",
@@ -56,15 +55,37 @@
             "env": {}
         }
     ],
-    "editor.detectIndentation": false,
+
     "zotero.latexCommand": "cite",
+
+    "editor.detectIndentation": false,
     "editor.rulers": [
         140
     ],
     "editor.wordWrap": "wordWrapColumn",
     "editor.wordWrapColumn": 140,
+    "editor.minimap.enabled": false,
+    "editor.fontSize": 16,
+    "editor.fontFamily": "JetBrains Mono",
+    "editor.lineHeight": 1.6,
+
     "latex-workshop.view.pdf.viewer": "tab",
     "latex-workshop.latex.autoBuild.run": "never",
-    "editor.fontSize": 17,
-    "editor.minimap.enabled": false
+
+
+    "workbench.startupEditor": "none",
+    "workbench.colorTheme": "Dracula Cleaner",
+    "workbench.activityBar.location": "top",
+
+    "scm.alwaysShowRepositories": true,
+    "scm.alwaysShowActions": true,
+    "scm.compactFolders": false,
+    "scm.defaultViewMode": "tree",
+
+    "go.toolsManagement.autoUpdate": true,
+
+    "explorer.compactFolders": false,
+    "explorer.decorations.badges": false,
+
+    "git.alwaysSignOff": true
 }

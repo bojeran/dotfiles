@@ -159,6 +159,7 @@
   - Accessibility -> Siri -> Check "Enable Type to Siri" (if you like Siri)
   - Icon Bar -> remove icons you don't need by holding CMD and drop them out
   - Icon Bar -> Open Control-Center and drag & drop the sound panel to the icon bar. This way we get the old sound control back!
+  - Sound -> Alert Sound -> set to: Pebble
 
 - OS X Hidden Preferences:
   - Strg+h: When application hides show to application symbol transparently.

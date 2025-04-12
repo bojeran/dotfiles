@@ -1,0 +1,18 @@
+
+function env::nix {
+
+    if common::prompt-string-contains "[nix]"; then return 0; fi
+
+    # This is what the installer usually puts into /etc/bashrc
+    # This is also modifies the PATH and enables nix-env installed packages
+    # Nix
+    if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+      . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+    fi
+    # End Nix
+
+    if ! which nix &> /dev/null; then common::prompt-string-add '[nixErr]'; return 1; fi
+
+    common::prompt-string-add '[nix]'
+}
+
