@@ -9,7 +9,7 @@
       
 - Use `.ideavimrc` provided through this project.
 
-- Editor -> General -> Soft-Wraps -> Soft-Wrap these files: `.md, ...`
+- Editor -> General -> Soft-Wraps -> Soft-Wrap these files: `*.md; *.tex`
   When writing more complex documentation there is almost no way around soft wrapping because of the simple problem of extending text that is hard-wrapped (except it is hard-wrapped automatically).
 
 - Under Windows:
