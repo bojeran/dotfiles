@@ -154,6 +154,14 @@ if helper::source-bash "${BASH_ENVS_LOCATION}/nix"; then
   : "No shadowing needed"
   alias nix="unalias nix &>/dev/null; env::nix; nix"
   alias env::nix="unalias env::nix nix &>/dev/null; env::nix"
+  # load nix by default
+  if [[ "$TERM_PROGRAM" == "vscode" ]] || [[ -n "$VSCODE_PID" ]]; then
+    # vs-code
+    env::nix
+  else
+    # any other terminal
+    env::nix
+  fi
 fi
 
 if helper::source-bash "${BASH_ENVS_LOCATION}/nix_shell"; then
