@@ -4,7 +4,7 @@
 ```
 # Install .bash_profile
 nix-build \
-  -E "import (builtins.fetchurl 'https://raw.githubusercontent.com/bojeran/dotfiles/refs/heads/master/default.nix')" \
+  -E "import (builtins.fetchurl { url = \"https://raw.githubusercontent.com/bojeran/dotfiles/refs/heads/master/default.nix\"; })" \
   --arg fetch_git true \
   -o $HOME/.bash_profile
 ```
