@@ -184,8 +184,9 @@ if helper::source-bash "${BASH_ENVS_LOCATION}/nix_shell"; then
 
   # to wrap every nix-shell with user specific stuff
   # This is an intrusive experimental overwrite and doesn't take a lot of things into consideration
-  alias nix-shell="unalias nix nix-shell &>/dev/null; env::nix-shell"
-  alias env::nix-shell="unalias env::nix-shell nix nix-shell &>/dev/null; env::nix-shell"
+  env::nix-shell-alias
+  #alias nix-shell="unalias nix nix-shell &>/dev/null; env::nix-shell"
+  #alias env::nix-shell="unalias env::nix-shell nix nix-shell &>/dev/null; env::nix-shell"
   common::register-shadow
 fi
 
