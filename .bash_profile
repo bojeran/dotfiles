@@ -194,6 +194,11 @@ alias docker="echo ENVIRONMENT IS NOT ENABLED"
 
 
 ######################
+### feature: macOS only iterm2 shell integration
+[[ -f $HOME/.iterm2_shell_integration.bash ]] && source $HOME/.iterm2_shell_integration.bash
+
+
+######################
 ### feature: show shadow counter
 common::show-shadow-counter-in-title
 
