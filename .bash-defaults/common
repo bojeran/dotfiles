@@ -20,6 +20,37 @@ function common::history-security {
     export HISTCONTROL="$1"
 }
 
+function common::enable-preserved-history {
+    # Bash by default loads the file $HISTFILE into memory for a new session.
+    # However, by default it truncates the history after the end of a session to
+    # $HISTFILESIZE lines. To preserve as much history as possible, use this
+    # feature.
+    # Check your current $HISTFILE size with `cat $HISTFILE|wc -l`
+    #
+    # The problem with this setting is that a big $HISTFILE might load slowly.
+    # But having all the things in the history is more valuable then loading
+    # time because of the Ctrl+R workflow.
+
+    shopt -s histappend
+
+    # Numeric values less than zero result in every command being saved on the
+    # history
+    HISTSIZE=-1
+    # Non-numeric values and numeric values less than zero inhibit truncation
+    HISTFILESIZE=-1
+}
+
+function common::enable-shared-history {
+    # Feature: Preserve bash history in multiple terminal windows
+    #
+    # No need to switch to zsh for this feature. However, this implementation
+    # might be very slow.
+    #
+    # On each new terminal line it will append the commands to $HISTFILE,
+    # clear history, and reload the history from $HISTFILE.
+    PROMPT_COMMAND="history -a;history -c;history -r;$PROMPT_COMMAND"
+}
+
 function common::overwrite-locale {
     # Run `locale` to get an overview.
     # Applications in the terminal that use special characters
