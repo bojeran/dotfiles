@@ -37,8 +37,20 @@ set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab " set tab size to
 set ttimeoutlen=0               " remove waiting for special keys after 
                                 "   hitting <ESC>
 
+set autochdir                   " automatically change in the directory of
+                                " the current file
+
 " HOTKEYS
 let mapleader = ","             " set leader key, for hotkeys starting with it
+
+" noremap y z
+" noremap z y
+" noremap! y z
+" noremap! z y
+                                " US layout uses QWERTY and therefore shortcuts
+                                "   are optimzed for it. On QWERTZ you want
+                                "   at a minimum switch Y and Z key.
+                                " yy does not work at the moment
 
 noremap <space> :
                                 " ergonomic reason (press one key instead of
@@ -130,3 +142,23 @@ endfunction
 
 noremap <leader>z "=ZoteroCite()<CR>p
 inoremap <C-z> <C-r>=ZoteroCite()<CR>
+
+" Source: https://stackoverflow.com/questions/61766814/close-netrw-explorer-after-opening-a-new-file
+" Close after opening a file (which gets opened in another window):
+let g:netrw_fastbrowse = 0
+autocmd FileType netrw setl bufhidden=wipe
+function! CloseNetrw() abort
+  for bufn in range(1, bufnr('$'))
+    if bufexists(bufn) && getbufvar(bufn, '&filetype') ==# 'netrw'
+      silent! execute 'bwipeout ' . bufn
+      if getline(2) =~# '^" Netrw '
+        silent! bwipeout
+      endif
+      return
+    endif
+  endfor
+endfunction
+augroup closeOnOpen
+  autocmd!
+  autocmd BufWinEnter * if getbufvar(winbufnr(winnr()), "&filetype") != "netrw"|call CloseNetrw()|endif
+aug END
