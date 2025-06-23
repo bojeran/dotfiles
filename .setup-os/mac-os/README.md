@@ -16,7 +16,10 @@
     - iterm2: Appearance -> Panes: Separate status bar per pane -> enable  
     - iterm2: General -> Magic -> Advanced GPU Settings -> Uncheck Disable GPU
       renderer when disconnected from power
+    - iterm2: General -> Selection -> Double-click performs smart-selection -> enable
+    - iterm2: General -> Window -> Title -> Each Window may have its own window title -> disable (This way each tab is it's own workspace with a somewhat persistent name)
     - iterm2: Profiles -> Hotkey Window -> Keys -> General -> Uncheck "A hotkey opens a dedicated window with this profile"
+    - iterm2: Advanced -> Tab bar height (points) for the Minimal theme. -> set to 22
     - `touch "${HOME}/.hushlogin"`: Remove "last logged in message" whenever you open a login-shell.
   - [Install homebrew](https://brew.sh/)
   - Optionally: [Install MacPorts](https://www.macports.org/install.php)
@@ -50,6 +53,7 @@
     (This gives you the default readline-based Linux terminal behaviour for alt+. (Meta+.) that some terminal users use (insert last command argument). You could also change it in Profiles -> Keys -> Left Option Key: ESC+ but this destroys writing special characters such as: "~". All keyboard shortcuts: https://en.wikipedia.org/wiki/GNU_Readline)
   - iterm2: Keys -> Key Bindings -> set Alt+b, Alt+c, Alt+d, Alt+f, Alt+r, Alt+u (except Alt+l) to send Escape sequence: ESC+b, ESC+c, ..., ESC+u as this gives you the standard emac shortcuts back (See previous bullet point). Alt+l does unfortunately collide with writing @ on a german mac keyboard layout.
   - iterm2: Preferences -> Advanced Settings -> Custom tab label font size (change optionally) -> 18
+  - iterm2: Profiles -> Keys -> General -> Left option key AND Right option key -> set to `Esc+` to make nvim shortcuts work with the option keys (A+1 for example). See `barbar.nvim` for example that uses such key mappings to switch between tabs.
   - Copy .bash_profile to $HOME/.bash_profile and improve/fix it
   - Install tabset:
     - brew install npm && npm install -g iterm2-tab-set

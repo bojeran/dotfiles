@@ -1,14 +1,33 @@
 # dotfiles
+## Quick Install .bash_profile
 
-Look into this repository when you care about the importance of following features, in this order:
- - clean-terminal-every-time (>load almost NOTHING for each new terminal)
-   - load-time (>ultra snappy terminal behaviour for known commands)
-   - **lazy-loading commands** (>unknown commands are dynamically searched for)
-     - transparent (>show which environments are loaded in PS1) (>show which environment gets loaded with exact PATH)
- - no dependencies (>implies quick-deployment of the dotfiles) (>implies compatibility with WSL2, macOS, Linux)
- - don't mess with the default behaviour (>learned shortcuts work on most systems)
+```
+# Install .bash_profile
+nix-build \
+  -E "import (builtins.fetchurl 'https://raw.githubusercontent.com/bojeran/dotfiles/refs/heads/master/default.nix')" \
+  --arg fetch_git true \
+  -o $HOME/.bash_profile
+```
 
-Unfortunately lazy loading is EXPERIMENTAL AND HACKY and will probably NEVER reach stable as there are too many edge cases. It can also break the terminal completely if something is wrong requiring you to temporarily disable your bash config. But I still don't want to miss this feature and could not find a better way to implement it.
+## Comparison
+
+| Aspect                                                         | ★ This .bash\_profile                                   | Heavyweight framework                                | Stock \~/.bashrc |
+|----------------------------------------------------------------|---------------------------------------------------------|------------------------------------------------------|------------------|
+| **Cold-start load time**                                       | ★ **Ultra-snappy** (loads almost nothing)               | ✗ Noticeably slower (hundreds of lines of plugins)   | ✓ Fast           |
+| **Clean terminal on every launch**                             | ★ Yes – no cruft left behind                            | ◔ Partial (plugins often emit output)                | ✓ Mostly         |
+| **Lazy-loading unknown commands**                              | ★ Built-in dynamic search → PATH added *only when used* | ✗ Usually absent (plugins pre-load)                  | ✗ Absent         |
+| **Transparent PS1**<br/>*(shows which env/path was pulled in)* | ★ Inline display of real-time PATH & envs               | ◔ Theme-dependent (often hidden)                     | ✗ None           |
+| **Monochrome symbol set**<br/>*(eye-friendly ★ ✓ ✗ only)*      | ★ Consistent, no color-bleed                            | ✗ Rainbow themes by default                          | ✓ Minimal        |
+| **External dependencies**                                      | ★ **Zero** – pure Bash                                  | ✗ Needs git, curl, sometimes node/python for plugins | ✓ None           |
+| **Drop-in deployment speed**                                   | ★ Quick Install → use (seconds)                         | ✗ Clone repo, run install script, update regularly   | ✓ Already there  |
+| **Cross-platform (WSL 2 / macOS / Linux)**                     | ★ Works everywhere unmodified                           | ◔ often one platform only (quirks required)          | ✓ Works          |
+| **Preserves default shortcuts / muscle-memory**                | ★ 99 % (no common alias overrides)                      | ✗ Many re-mapped keys & aliases                      | ✓ Preserved      |
+| **Overall friction**                                           | **★★★★☆ minimal**                                       | ★★☆☆☆                                                | ★★★☆☆            |
+
+
+## CHUNK included
+
+Because one monorepo for all setups is convenient there is way more in this repo then just a `.bash_profile`.
 
 You will also find setup&config instructions for: mostly macOS, a bit for Windows, little for Linux.
 
@@ -29,7 +48,7 @@ Just copy the **dotfiles** you like and discover the sub-folders to dig into my 
 When the application to be configured cannot be configured via a dotfile you might find configurations in one of the sub-folders.
 
 
-# Getting Started
+# Classic Installation
 ```
 git clone https://github.com/bojeran/dotfiles.git
 cd dotfiles

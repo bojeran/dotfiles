@@ -1,80 +1,63 @@
 
-# REASONING
-
-#######################################
-## - - DO NOT SYMLINK THIS FILE - - ###
-# A .bash_profile file is supposed to be changed by the user at ANYTIME.
-# Using a `.bash_profile` from a git repository has often the reason to be able
-# to update the file later on.
-# - You probably will never run the update
-# - The update will probably cause a merge-conflict nightmare
-# - ...
-
-###########################
-### - - PERFORMANCE - - ###
-# As a snappy terminal is one of the most important things (see README) the
-# following decisions were made:
-# Use a lot of function definitions as they do not cost a lot of execution time
-# AND do not run ALL of them everytime you start a new terminal session.
-
-####################
-### - - TMUX - - ###
-# To get different behaviour depending on when you are in a tmux session or not
-# tmux::is_this_a_tmux_session
+# Dependencies
 
 BASH_DEFAULTS_LOCATION="${HOME}/.bash-defaults"
 BASH_ENVS_LOCATION="${HOME}/.bash-envs"
 
-############
-### helper
+
+# helper
 
 source "${BASH_DEFAULTS_LOCATION}/common_helper" || { echo "bash profile helper not found."; sleep 10; exit 1; }
+
 
 ###########################################
 ### FEATURE: lazy loading commands/envs
 #
-# When a command is not found. The command_not_found_handle will check in all
-# environments below whether that command exists and when found, loads the
-# environment automatically for you and executes the command.
-# Make sure a function exists named: "env::${ENV}" e.g. "env::brew".
-#
-# Chicken/Egg problem: When you put the more generic environment such as homebrew first then
-# it will find homebrew's 'node command' first before it tries the NVM environment.
-# However, when you put NVM before homebrew. You have the problem that they load
-# homebrew as dependency and therefore find ALL homebrew installed packages also
-# in the NVM environment, even when it is not part of NVM.
 
-# Solution: Load all environments and do some logic. Assume the more generic
-#           environments being in the front. The first environment that has the
-#           executable will be the (default) environment for this executable.
-#           When a later environment has a different executable it will used
-#           instead aka. the (overwrite) environment. When there are
-#           multiple overwrites the last overwrite will be used.
+# Variables contains all environments to check for missing commands.
+#  1. First-Environment containing the command is the fallback environment.
+#  2. Second-Environment containing the command is the environment that will be used.
+#  3. Successive-Environment containing the command will be used instead.
+#  4. If only the First-Environment contains the command this environment will be used. (Fallback)
+declare -a AUTO_CHECK_ENVS=( "local-bin" "brew" "brew-nvm" "brew-cargo" "brew-pyenv" "brew-bash-completion" "macports" "brew-go" "brew-java" "dev-envs" "nix" )
 
-declare -a AUTO_CHECK_ENVS=( "local-bin" "brew" "brew-nvm" "brew-cargo" "brew-pyenv" "brew-bash-completion" "macports" "brew-go" "brew-java" "dev-envs" "nix" "nix-shell" )
-
-if helper::source-bash "${BASH_DEFAULTS_LOCATION}/common_lazy_loading"; then
-  : "Lazy loading makes the terminal super snappy (first time running some commands takes a little longer)"
-  # uses special bash method "command_not_found_handle"; Do not shadow/overwrite!
-fi
+# Lazy loading makes the terminal super snappy (first time running some commands takes a little longer)
+# uses special bash method "command_not_found_handle"; Do not shadow/overwrite!
+helper::source-bash "${BASH_DEFAULTS_LOCATION}/common_lazy_loading"
 
 ############
 ### common
 
 if helper::source-bash "${BASH_DEFAULTS_LOCATION}/common"; then
+  # collect existing envs
+  existing_envs="$(echo "$PS1" | grep -o '\[[^]]*\]')"
+
+  alias ls="ls --color"
+
+  # when there is an environment loaded preserve precious PS1
+  if [[ -z "${existing_envs}" ]]; then
     #common::prompt-string '\h:\W \u\$ '  # default macOS
     common::prompt-string '\W \$ '
+  else
+    # When any environment is loaded based on the PS1 content it assumed
+    # that we are in an environment that we don't want to mess with.
+    #echo "Preserved existing envs: ${existing_envs}"
+    return
+  fi
 
-    common::history-security "erasedups:ignorespace"
+  common::history-security "erasedups:ignorespace"
 
-    # Change the following to your preferred editor (usually: vim or nano)
-    common::set-default-editor vim
+  # Warning: Long load time with increasingly big $HISTFILE
+  common::enable-preserved-history
+  # Warning: Long load time on each new terminal prompt with big $HISTFILE
+  # common::enable-shared-history
+
+  # Change the following to your preferred editor (usually: vim or nano)
+  common::set-default-editor vim
 fi
 
-if helper::source-bash "${BASH_DEFAULTS_LOCATION}/common_shadows"; then
-    : "shadow counter initialized"
-else
-    alias common::register-shadow=":"
+if ! helper::source-bash "${BASH_DEFAULTS_LOCATION}/common_shadows"; then
+  alias common::register-shadow=":"
 fi
 
 
@@ -89,14 +72,14 @@ fi
 
 if helper::source-bash "${BASH_ENVS_LOCATION}/brew"; then
   : "Partially load brew environment : SHADOWING EXISTING COMMANDS"
-  brew::coreutils && common::register-shadow
-  brew::gnu-sed && common::register-shadow
+  brew::coreutils && common::register-shadow  # ~107 commands (ls, du, cat, ...)
+  brew::gnu-sed && common::register-shadow    # 1 command
   # brew::gnu-getopt  # can cause issues
-  brew::ncurses && common::register-shadow
-  brew::bash && common::register-shadow
+  brew::ncurses && common::register-shadow    # projects with ncurses dependency
+  brew::bash && common::register-shadow       # the shell
 
   : "shadow and non-shadow commands"
-  brew::man-db && common::register-shadow
+  brew::man-db && common::register-shadow     # introduces "gman" (does not shadow man)
 
   : "Partially load brew environment with aliases : NON-SHADOWING"
   #brew::bash-completion@2
@@ -149,7 +132,9 @@ if helper::source-bash "${BASH_ENVS_LOCATION}/brew_go"; then
   alias go="unalias go &>/dev/null; env::brew-go; go"
   alias env::brew-go="unalias env::brew-go go &>/dev/null; env::brew-go"
   # load go by default (for VS-Code to detect go):
-  #env::brew-go
+  if [[ "$TERM_PROGRAM" == "vscode" ]] || [[ -n "$VSCODE_PID" ]]; then
+    env::brew-go
+  fi
 fi
 
 if helper::source-bash "${BASH_ENVS_LOCATION}/brew_java"; then
@@ -169,6 +154,14 @@ if helper::source-bash "${BASH_ENVS_LOCATION}/nix"; then
   : "No shadowing needed"
   alias nix="unalias nix &>/dev/null; env::nix; nix"
   alias env::nix="unalias env::nix nix &>/dev/null; env::nix"
+  # load nix by default
+  if [[ "$TERM_PROGRAM" == "vscode" ]] || [[ -n "$VSCODE_PID" ]]; then
+    # vs-code
+    env::nix
+  else
+    # any other terminal
+    env::nix
+  fi
 fi
 
 if helper::source-bash "${BASH_ENVS_LOCATION}/nix_shell"; then
@@ -184,12 +177,18 @@ if helper::source-bash "${BASH_ENVS_LOCATION}/nix_shell"; then
 
   # to wrap every nix-shell with user specific stuff
   # This is an intrusive experimental overwrite and doesn't take a lot of things into consideration
-  alias nix-shell="unalias nix nix-shell &>/dev/null; env::nix-shell"
-  alias env::nix-shell="unalias env::nix-shell nix nix-shell &>/dev/null; env::nix-shell"
+  env::nix-shell-alias
+  #alias nix-shell="unalias nix nix-shell &>/dev/null; env::nix-shell"
+  #alias env::nix-shell="unalias env::nix-shell nix nix-shell &>/dev/null; env::nix-shell"
   common::register-shadow
 fi
 
 alias docker="echo ENVIRONMENT IS NOT ENABLED"
+
+
+######################
+### feature: macOS only iterm2 shell integration
+[[ -f $HOME/.iterm2_shell_integration.bash ]] && source $HOME/.iterm2_shell_integration.bash
 
 
 ######################

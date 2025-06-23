@@ -1,12 +1,8 @@
 
 function common::bash_profile_content_check {
-  #if grep "# DO NOT REMOVE THIS LINE - NEW CONTENT CHECK" ${HOME}/.bash_profile &>/dev/null; then
-  #  echo "There is new content, in your .bash_profile".
-  #  # TODO: scan what it is and suggest where it belongs
-  #fi
-
   # Get the line number where this match is found:
-  LINENUMBER_MATCH="$(sed -n '/# DO NOT REMOVE THIS LINE - NEW CONTENT CHECK/{=; q;}' ${HOME}/.bash_profile)"
+  # Add an unnecessary escape sign to '-' to not match itself when method is added to .bash_profile
+  LINENUMBER_MATCH="$(sed -n '/# DO NOT REMOVE THIS LINE \- NEW CONTENT CHECK/{=; q;}' ${HOME}/.bash_profile)"
   NUMBER_OF_LINES="$(wc -l < "${HOME}/.bash_profile")"
 
   # early exit (for performance)

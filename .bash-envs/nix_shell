@@ -1,3 +1,98 @@
+function _get_nix_shell_wrapper_expr {
+    cat <<'EOF'
+# Don't directly store secrets in here.
+# As they would be stored in the nix-store.
+#
+# However, environment variables can be loaded from a file to add information
+# without storing them in the nix-store.
+# This nix-shell wrapper sources a .nix_bash_profile to archive this.
+
+{ pkgs ? import <nixpkgs> {}, 
+  ps1Prefix ? "",
+  shellPath ? null,
+  prevPS1            # <- mandatory to preserve parts of previous PS1
+}:
+
+let
+  extendedShellHook = { PS1append }:''
+    PS1="\W $(echo '${prevPS1}' | grep -o '\[[^]]*\]' | tr -d "\n")${PS1append}"
+
+    [[ -f $HOME/.bash_profile ]] && source $HOME/.bash_profile
+    [[ -f $HOME/.nix_bash_profile ]] && source $HOME/.nix_bash_profile
+    if [[ -f $HOME/.iterm2_shell_integration.bash ]]; then
+        # The iterm2 integration is messing with the PS1 variable.
+        # To gain full control over the PS1 variable the documentation
+        # says to export this variable.
+        export ITERM2_SQUELCH_MARK=1
+        source $HOME/.iterm2_shell_integration.bash
+        PS1="\[$(iterm2_prompt_mark)\]$PS1"
+    fi
+
+  '';
+
+  extendedPackages = [
+    pkgs.go        # for go development
+    pkgs.sshuttle  # tunnel to systems via ssh gateway
+  ] 
+  #++ ((import ../.bash-nix-packages/my-neovim/prereq-pkgs.nix) {inherit pkgs;})
+  #++ [
+  #  (pkgs.callPackage ../.bash-nix-packages/my-neovim {})
+  #]
+  ;
+
+  fallbackShell = pkgs.mkShell {
+    buildInputs = [ ] ++ extendedPackages;
+    shellHook = extendedShellHook {
+      PS1append = ">> $ ";
+    };
+  };
+
+  # Simple regex check: does shellPath start with `/`
+  isAbsolute = shellPath != null && builtins.match "^/.*" shellPath != null;
+
+  # Get nixvim
+  #nixvim = import (builtins.fetchGit {
+  #    url = "https://github.com/nix-community/nixvim";
+  #    # When using a different channel you can use `ref = "nixos-<version>"` to set it here
+  #});
+
+in
+if shellPath == null
+then
+  # No shellPath was passed at all
+  fallbackShell
+else if ! isAbsolute
+then
+  # shellPath is not an absolute path
+  fallbackShell
+else if ! builtins.pathExists shellPath
+then
+  # shellPath is absolute but the file doesn't exist
+  fallbackShell
+else
+  # Otherwise, import the user-specified shell and tweak it
+  (import shellPath { inherit pkgs; })
+    .overrideAttrs (old: {
+      # The original mkShell might use packages to specify packages. However,
+      # nix translates that to buildInputs or nativeBuildInputs and drops the
+      # packages attribute. That's why we add the packages we want in addition
+      # in buildInputs. Having the same package defined multiple times in that
+      # list is no issue (will only be added once).
+      buildInputs = old.buildInputs ++ [ ] ++ extendedPackages;
+
+      # When you see a double dollar in PS1 you know it is wrapped shell
+      # $ = normal shell;  $$ = wrapped shell
+      shellHook = ''
+        ${old.shellHook or ""}
+      '' + extendedShellHook {
+        PS1append = ">>[shell.nix] $ ";
+      };
+
+    })
+
+EOF
+}
+
 function env::nix-shell {
     env::nix || return 1  # dependency
 
@@ -19,17 +114,20 @@ function env::nix-shell {
 
     # When the shell.nix is not found do nothing
     if [[ ! -r "${path_to_shell_nix_file}" ]]; then
-      common::prompt-string-add "[NO shell.nix found]"
-      return 1
+      echo "No shell.nix found, load system-nix-shell"
+      #nix-shell <(_get_nix_shell_wrapper_expr) --argstr prevPS1 "${PS1}"
+      nix-shell -E 'import ('<(_get_nix_shell_wrapper_expr)')' --argstr prevPS1 "${PS1}"
+    else
+      #nix-shell <(_get_nix_shell_wrapper_expr) --argstr ps1Prefix "${nix_shell_name}" --argstr shellPath "${path_to_shell_nix_file}" --argstr prevPS1 "${PS1}"
+      nix-shell -E 'import ('<(_get_nix_shell_wrapper_expr)')' --argstr ps1Prefix "${nix_shell_name}" --argstr shellPath "${path_to_shell_nix_file}" --argstr prevPS1 "${PS1}"
     fi
 
-    nix-shell "$HOME/.bash-envs/nix-shell-wrapper.nix" --argstr ps1Prefix "${nix_shell_name}" --argstr shellPath "${path_to_shell_nix_file}"
+    # when exiting temp environment reestablish nix-shell alias
+    env::nix-shell-alias
+}
 
-    # When you exit out of the shell the alias is gone
-    # So we replace the current bash session with a fresh new login-shell
-    # Does not seem to work through: alias -> function -> call
-    #exec bash -l
-
-    common::prompt-string-add "[no nix-shell alias]"
+function env::nix-shell-alias {
+  alias nix-shell="unalias nix nix-shell &>/dev/null; env::nix-shell"
+  alias env::nix-shell="unalias env::nix-shell nix nix-shell &>/dev/null; env::nix-shell"
 }
 
