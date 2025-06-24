@@ -1,21 +1,13 @@
 # dotfiles
 ## Quick Install .bash_profile
 
-```bash
+```
 # Install .bash_profile
 nix-build \
   -E "import (builtins.fetchurl { url = \"https://raw.githubusercontent.com/bojeran/dotfiles/refs/heads/master/default.nix\"; })" \
   --arg fetch_git true \
-  --arg force_refresh true \
   -o $HOME/.bash_profile
 ```
-
-### Cache Behavior
-Nix caches git repositories to speed up builds. To get the latest changes:
-- **Normal**: Uses cached version (fast, may be outdated)
-- **Force refresh**: `--arg force_refresh true` (fetches latest, slower)
-- **Specific commit**: `--arg rev '"commit-hash"'` (exact reproducible build)
-- **Manual cache clear**: `rm -rf ~/.cache/nix && nix-collect-garbage -d`
 
 ## Comparison
 
