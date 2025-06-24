@@ -80,7 +80,7 @@ else
       # list is no issue (will only be added once).
       buildInputs = old.buildInputs ++ [ ] ++ extendedPackages;
 
-      # When you see a double dollar in PS1 you know it is wrapped shell
+      # When you see a >> in PS1 you know it is wrapped shell
       # $ = normal shell;  $$ = wrapped shell
       shellHook = ''
         ${old.shellHook or ""}
@@ -114,12 +114,16 @@ function env::nix-shell {
 
     # When the shell.nix is not found do nothing
     if [[ ! -r "${path_to_shell_nix_file}" ]]; then
-      echo "No shell.nix found, load system-nix-shell"
-      #nix-shell <(_get_nix_shell_wrapper_expr) --argstr prevPS1 "${PS1}"
-      nix-shell -E 'import ('<(_get_nix_shell_wrapper_expr)')' --argstr prevPS1 "${PS1}"
+      echo "No shell.nix found in current directory, load system-nix-shell"
+      NIX_EXPR=$(_get_nix_shell_wrapper_expr) nix-shell \
+        -E 'import (builtins.toFile "shell.nix" (builtins.getEnv "NIX_EXPR"))' \
+        --argstr prevPS1 "${PS1}"
     else
-      #nix-shell <(_get_nix_shell_wrapper_expr) --argstr ps1Prefix "${nix_shell_name}" --argstr shellPath "${path_to_shell_nix_file}" --argstr prevPS1 "${PS1}"
-      nix-shell -E 'import ('<(_get_nix_shell_wrapper_expr)')' --argstr ps1Prefix "${nix_shell_name}" --argstr shellPath "${path_to_shell_nix_file}" --argstr prevPS1 "${PS1}"
+      NIX_EXPR=$(_get_nix_shell_wrapper_expr) nix-shell \
+        -E 'import (builtins.toFile "shell.nix" (builtins.getEnv "NIX_EXPR"))' \
+        --argstr ps1Prefix "${nix_shell_name}" \
+        --argstr shellPath "${path_to_shell_nix_file}" \
+        --argstr prevPS1 "${PS1}"
     fi
 
     # when exiting temp environment reestablish nix-shell alias
