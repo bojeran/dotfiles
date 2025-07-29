@@ -1,5 +1,5 @@
 # dotfiles
-## Quick Install .bash_profile
+## Instant Install .bash_profile
 
 ```
 # Install .bash_profile
@@ -8,6 +8,16 @@ nix-build \
   --arg fetch_git true \
   -o $HOME/.bash_profile
 ```
+
+
+## Quick Install .bash_profile
+```
+# 1. clone project
+# 2. cd into project
+# 3. run:
+nix-build -o $HOME/.bash_profile
+```
+
 
 ## Comparison
 
