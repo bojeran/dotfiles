@@ -1,0 +1,27 @@
+# only activate this manually through a "docker" alias (for performance reasons)
+
+function env::brew-docker-lima {
+    env::brew || return 1  # dependency
+
+    if common::prompt-string-contains "[dockerlima]"; then return 0; fi
+
+    function error-and-exit {
+      common::prompt-string-contains "[dockerlimaErr]";
+      return 1;
+    }
+
+
+    if ! which docker &> /dev/null; then error-and-exit; fi
+    if ! which limactl &> /dev/null; then error-and-exit; fi
+    if ! limactl list docker &> /dev/null; then error-and-exit; fi
+
+    if [[ "$(limactl list docker --format json| jq -r ".status" 2>/dev/null)" == "Running" ]]; then
+      echo 'docker context create lima-docker --docker "host=unix:///Users/bodo/.lima/docker/sock/docker.sock"'
+      echo 'docker context use lima-docker'
+      echo 'docker run hello-world'
+    else
+      limactl start docker
+    fi
+
+    common::prompt-string-add '[dockerlima]'
+}

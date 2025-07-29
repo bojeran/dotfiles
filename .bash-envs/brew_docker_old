@@ -1,3 +1,4 @@
+# deprecated
 # needs validation
 
 function env::brew-docker {

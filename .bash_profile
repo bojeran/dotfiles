@@ -149,6 +149,13 @@ if helper::source-bash "${BASH_ENVS_LOCATION}/dev_envs"; then
   alias env::dev-envs="unalias env::dev-envs dev &>/dev/null; env::dev-envs"
 fi
 
+if helper::source-bash "${BASH_ENVS_LOCATION}/brew_docker_lima"; then
+  : "No shadowing needed"
+  #alias docker="echo ENVIRONMENT IS NOT ENABLED"
+  alias docker="unalias docker &>/dev/null; env::brew-docker-lima; docker"
+  alias env::brew-docker-lima="unalias env::brew-docker-lima docker &>/dev/null; env::brew-docker-lima"
+fi
+
 
 if helper::source-bash "${BASH_ENVS_LOCATION}/nix"; then
   : "No shadowing needed"
@@ -183,7 +190,6 @@ if helper::source-bash "${BASH_ENVS_LOCATION}/nix_shell"; then
   common::register-shadow
 fi
 
-alias docker="echo ENVIRONMENT IS NOT ENABLED"
 
 
 ######################
