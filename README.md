@@ -1,17 +1,24 @@
 # dotfiles
-## Instant Install .bash_profile
+## Instant Installation
 
 ```
-# Install .bash_profile
+# .bash_profile
 nix-build \
-  -E "import (builtins.fetchurl { url = \"https://raw.githubusercontent.com/bojeran/dotfiles/refs/heads/master/default.nix\"; })" \
-  --arg fetch_git true \
-  -A bash_profile \
+  -E "(import (builtins.fetchTarball \"https://github.com/bojeran/dotfiles/archive/refs/heads/master.tar.gz\") { }).bash_profile" \
   -o $HOME/.bash_profile
+
+# .vimrc
+nix-build \
+  -E "(import (builtins.fetchTarball \"https://github.com/bojeran/dotfiles/archive/refs/heads/master.tar.gz\") { }).vimrc" \
+  -o $HOME/.vimrc
+
+# neovim with plugins
+nix-env -i -f "https://github.com/bojeran/dotfiles/archive/refs/heads/master.tar.gz" -A neovim
 ```
 
 
-## Quick Install .bash_profile
+# Development build
+If you intend to change your `.bash_profile` over time you might want to clone the repo, make your changes and then build your project locally:
 ```
 # 1. clone project
 # 2. cd into project
@@ -19,22 +26,7 @@ nix-build \
 nix-build -A bash_profile -o $HOME/.bash_profile
 ```
 
-## Instant Install neovim with plugins
-```
-nix-env -i -f "https://github.com/bojeran/dotfiles/archive/refs/heads/master.tar.gz" -A neovim
-```
-
-## Instant Install .vimrc
-```
-nix-build \
-  -E "import (builtins.fetchurl { url = \"https://raw.githubusercontent.com/bojeran/dotfiles/refs/heads/master/default.nix\"; })" \
-  --arg fetch_git true \
-  -A vimrc \
-  -o $HOME/.vimrc
-```
-
-
-## Comparison
+# Comparison
 
 | Aspect                                                         | ★ This .bash\_profile                                   | Heavyweight framework                                | Stock \~/.bashrc |
 |----------------------------------------------------------------|---------------------------------------------------------|------------------------------------------------------|------------------|
@@ -50,7 +42,7 @@ nix-build \
 | **Overall friction**                                           | **★★★★☆ minimal**                                       | ★★☆☆☆                                                | ★★★☆☆            |
 
 
-## CHUNK included
+# CHUNK included
 
 Because one monorepo for all setups is convenient there is way more in this repo then just a `.bash_profile`.
 
