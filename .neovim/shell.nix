@@ -3,6 +3,6 @@
 { pkgs ? import <nixpkgs> {} }:
 pkgs.mkShell {
   buildInputs = [
-    (pkgs.callPackage ./my-neovim.nix {})
+    (pkgs.callPackage ./my-neovim {})
   ];
 }

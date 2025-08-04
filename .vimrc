@@ -17,6 +17,9 @@ set number                      " show absolute line number at current position
 
 set relativenumber              " show relative line numbers everywhere else
 
+" Show: tab, spaces, non-breaking spaces, trailing spaces, end-of-line
+set listchars=tab:→\ ,space:·,nbsp:␣,trail:•,eol:¶,precedes:«,extends:»
+
 
 " FURTHER SETTINGS YOU DON'T HAVE TO REMEMBER 
 filetype plugin indent off      " detect filetypes and custom plugin and indent

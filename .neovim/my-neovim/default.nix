@@ -35,6 +35,7 @@ let
       { plugin = vim-lastplace; } # remember cursor location (even for folds)
       { plugin = nvim-ufo; } # FOLD/COLLAPSE: z+R, z+M, z+o, z+c, z+f
       #{ plugin = lspsaga-nvim; } # Peek Definitions # broken
+      { plugin = ctrlp-vim; } # Ctrl+p to switch between files (conflict with barbar?)
 
       # GO language
       { plugin = vim-go; }

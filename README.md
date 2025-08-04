@@ -6,6 +6,7 @@
 nix-build \
   -E "import (builtins.fetchurl { url = \"https://raw.githubusercontent.com/bojeran/dotfiles/refs/heads/master/default.nix\"; })" \
   --arg fetch_git true \
+  -A bash_profile \
   -o $HOME/.bash_profile
 ```
 
@@ -15,7 +16,21 @@ nix-build \
 # 1. clone project
 # 2. cd into project
 # 3. run:
-nix-build -o $HOME/.bash_profile
+nix-build -A bash_profile -o $HOME/.bash_profile
+```
+
+## Instant Install neovim with plugins
+```
+nix-env -i -f "https://github.com/bojeran/dotfiles/archive/refs/heads/master.tar.gz" -A neovim
+```
+
+## Instant Install .vimrc
+```
+nix-build \
+  -E "import (builtins.fetchurl { url = \"https://raw.githubusercontent.com/bojeran/dotfiles/refs/heads/master/default.nix\"; })" \
+  --arg fetch_git true \
+  -A vimrc \
+  -o $HOME/.vimrc
 ```
 
 
