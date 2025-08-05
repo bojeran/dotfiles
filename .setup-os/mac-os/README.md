@@ -68,6 +68,10 @@
     - copy .tmux.conf to $HOME/.tmux.conf (no changes required)
   - ENABLE_TMUX_TAB=true in .bash_profile
 
+  - [Install nix](https://nix.dev/install-nix#install-nix)
+    - If you use nix environments for development you can skip: pyenv, nvm, cargo, go and all the other environment and package managers. You simply temporarily activate them when you need them with `nix-shell -p ...` or better define them declaratively in a `shell.nix` file on a project basis.
+    - However, when combining nix with the `.bash_profile` lazy loading concept of this repo you can still have them installed the common way without interfering too much.
+
   - Install nvm (and install latest npm)
     - `brew install nvm` and do a .bash_profile integration
     - `nvm install node`, now you have a development npm as well.
