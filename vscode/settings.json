@@ -62,16 +62,15 @@
     "editor.rulers": [
         140
     ],
-    "editor.wordWrap": "wordWrapColumn",
-    "editor.wordWrapColumn": 140,
+    "editor.wordWrap": "on",
     "editor.minimap.enabled": false,
-    "editor.fontSize": 16,
+    "editor.fontSize": 15,
     "editor.fontFamily": "JetBrains Mono",
     "editor.lineHeight": 1.6,
+    "editor.hover.enabled": false,
 
     "latex-workshop.view.pdf.viewer": "tab",
     "latex-workshop.latex.autoBuild.run": "never",
-
 
     "workbench.startupEditor": "none",
     "workbench.colorTheme": "Dracula Cleaner",
@@ -87,5 +86,8 @@
     "explorer.compactFolders": false,
     "explorer.decorations.badges": false,
 
-    "git.alwaysSignOff": true
+    "git.alwaysSignOff": true,
+
+    "telemetry.feedback.enabled": false,
+    "telemetry.editStats.enabled": false
 }
