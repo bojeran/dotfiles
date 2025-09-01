@@ -1,0 +1,45 @@
+# <type>[optional scope]: <description>
+#
+# [optional body]
+#
+# [optional footer(s)]
+
+# --- COMMIT END ---
+# Type can be:
+#   feat     (new feature)
+#   fix      (bug fix)
+#   docs     (changes to documentation)
+#   style    (formatting, missing semi colons, etc; no code change)
+#   refactor (refactoring production code)
+#   test     (adding tests, refactoring test code; no production code change)
+#   chore    (updating build tasks, package manager configs, etc; no production code change)
+#   perf     (performance improvement)
+#   build    (changes that affect the build system or external dependencies)
+#   ci       (changes to CI configuration files and scripts)
+#
+# Scope is optional and can be anything specifying place of the commit change.
+# For example: feat(parser), fix(api), docs(readme)
+#
+# Subject line should be 50 characters or less
+# Separate subject from body with a blank line
+# Body should wrap at 72 characters
+# Use the body to explain what and why vs. how
+#
+# Breaking Changes:
+#   - Add ! after the type/scope: feat(api)!: breaking change
+#   - Or include "BREAKING CHANGE:" in the footer
+#
+# Common footers:
+#   Refs: #123, #456
+#   Fixes: #123
+#   Closes: #123
+#   Reviewed-by: Name <email>
+#   Co-authored-by: Name <email>
+#
+# Examples:
+#   feat: add user authentication
+#   fix(api): prevent crash when user data is null
+#   feat(lang)!: send email when product ships
+#   docs: correct spelling of CHANGELOG
+#   style: format code according to the style guide
+#   refactor: extract user service
