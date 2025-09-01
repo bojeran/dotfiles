@@ -34,6 +34,7 @@ let
       # General
       { plugin = vim-lastplace; } # remember cursor location (even for folds)
       { plugin = nvim-ufo; } # FOLD/COLLAPSE: z+R, z+M, z+o, z+c, z+f
+      { plugin = statuscol-nvim; } # fix column number from nvim-ufo
       #{ plugin = lspsaga-nvim; } # Peek Definitions # broken
       { plugin = ctrlp-vim; } # Ctrl+p to switch between files (conflict with barbar?)
 
@@ -78,6 +79,8 @@ let
     ''+((import ./barbar.nix) {})+''
     ''+((import ./neo-tree.nix) {})+''
     ''+((import ./ufo.nix) {})+''
+    ''+((import ./statuscol.nix) {})+''
+    ''+((import ./ctrlp.nix) {})+''
 
     ''+((import ./neogit.nix) {})+''
     ''+((import ./gitsigns.nix) {})+''
@@ -88,7 +91,6 @@ let
 
       -- custom color scheme
       vim.cmd.colorscheme("darcula-dark")
-
     '';
   };
   
