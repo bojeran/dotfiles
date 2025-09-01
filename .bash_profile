@@ -76,6 +76,7 @@ if helper::source-bash "${BASH_ENVS_LOCATION}/brew"; then
   brew::gnu-sed && common::register-shadow    # 1 command
   # brew::gnu-getopt  # can cause issues
   brew::ncurses && common::register-shadow    # projects with ncurses dependency
+                                              # and overwrites clear command
   brew::bash && common::register-shadow       # the shell
 
   : "shadow and non-shadow commands"
