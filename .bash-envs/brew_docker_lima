@@ -15,7 +15,13 @@ function env::brew-docker-lima {
     if ! which limactl &> /dev/null; then error-and-exit; fi
     if ! limactl list docker &> /dev/null; then error-and-exit; fi
 
-    if [[ "$(limactl list docker --format json| jq -r ".status" 2>/dev/null)" == "Running" ]]; then
+    # Support: Special use-case for an x86 docker instance
+    #          docker-x86 must be started manually in beforehand in this case
+    if [[ "$(limactl list docker-x86 --format json| jq -r ".status" 2>/dev/null)" == "Running" ]]; then
+      echo 'docker context create lima-docker-x86 --docker "host=unix:///Users/bodo/.lima/docker-x86/sock/docker.sock"'
+      echo 'docker context use lima-docker-x86'
+      echo 'docker run hello-world'
+    elif [[ "$(limactl list docker --format json| jq -r ".status" 2>/dev/null)" == "Running" ]]; then
       echo 'docker context create lima-docker --docker "host=unix:///Users/bodo/.lima/docker/sock/docker.sock"'
       echo 'docker context use lima-docker'
       echo 'docker run hello-world'
