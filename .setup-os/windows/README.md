@@ -49,6 +49,19 @@ A Rapid way of Windows 10 installation:
    (Not sure how, probably with ADK (Windows Assessment and Deployment Kit))
  
 
+# NTLite
+
+- On any already existing Windows machine download and activate NTLite
+
+- Download a recent Windows image iso
+
+- Load that Windows image into NTLite
+
+- Note that the options in the top bar of the applications are changing depending on the tab you are currently viewing. In some of the tabs you have to option to select a presets: Privacy, Gaming and Lite. Gaming includes the Privacy settings and Lite includes both Privacy and Gaming and removes some additional components. Select the option you like. If you are unsure go with Privacy or Gaming.
+
+- Go through each tab briefly and see what it does and if you want to keep it that way.
+
+- In the end create the image, flash it to a USB stick (for example with Rufus) and boot from it
 
 
 # Windows Setup
@@ -63,6 +76,7 @@ A Rapid way of Windows 10 installation:
   - optionally create a firefox profile: Win+R -> `firefox -P`
   - Run the `privacy.sexy` script for firefox
   - Configure manually
+  - Install uBlock Origin (go to settings and set that you are an expert)
 
 
 - Install chocolatey (https://chocolatey.org/install)
@@ -72,11 +86,21 @@ A Rapid way of Windows 10 installation:
   - Install vim, git and other things you like
 
 
-- Disable all App Execution aliases under: Apps & Features > App execution aliases.
+- Disable all App Execution aliases under: Apps > Advanced app settings > App execution aliases.
+
+- Disable archive Apps under: Apps > Advanced app settings > Archive apps.
 
 
-- Uninstall optional features under: Apps & Features > Optional Features.
-  
+- Uninstall optional features under: System > Optional Features.
+
+
+- File Explorer Options -> General -> Privacy -> Uncheck: Show files from Office.com
+- File Explorer Options -> General -> Open File Explorer to: This PC
+- File Explorer Options -> View -> Check: Decrease space between items (compact view)
+- File Explorer Options -> View -> Check: Display the full path in the title bar.
+- File Explorer Options -> View -> Uncheck: Hide folder merge conflicts
+- File Explorer Options -> View -> Uncheck: Use Sharing Wizard
+
 
 - Go to `https://privacy.sexy` - select what you like and apply to your system.
   - Webcam might not work problem:
@@ -84,79 +108,11 @@ A Rapid way of Windows 10 installation:
       otherwise you might have to enable&disable this setting everytime you want
       to use a Webcam
 
-- **Disable Windows Defender**
-  - The only sustainable and clean method to get rid of Windows Defender seems to be installing a fresh windows instance without it. Check out the ntlite based windows installation method.
-  - The following will probably not work and in the end you might need a script which runs on every Windows start. But you can try.
-  - Read about [Tamper Protection](
-    https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/prevent-changes-to-security-settings-with-tamper-protection?view=o365-worldwide)
-  - Go to Windows Security Settings and disable everything. Most importantly `Realtime Protection` and 
-    `Tamper Protection`.
-    - e.g.: Windows Security -> Virus & threat protection -> Virus & threat protection settings ->
-      Manage settings -> Tamper Protection -> Off
-  - (Other path) Not tried: `https://privacy.sexy` got you covered with some scripts you might need to execute.
-  - Get [Microsoft Sysinternals PsTools](https://docs.microsoft.com/en-us/sysinternals/downloads/pstools)
-    - needed to run things as SYSTEM user (being Administrator is not enough)
-    - Example `.\PsExec64.exe -s -i -d cmd.exe`
-    - Alternative: `https://www.nirsoft.net/utils/nircmd.html`
-      - Unpacking might not work if you have Realtime Protection on
-      - Example: `.\nircmd.exe elevatecmd runassystem cmd.exe`
-  - Open Resource Monitor (perfmon.exe /res)
-    - From Admin-Shell: `.\PsExec64.exe -s -i -d c:\windows\system32\perfmon.exe /res`
-    - -> Overview -> Right click "MsMpEng.exe" and press suspend.
-    - Warning: This step can cause windows to freeze if you did not disable all Options in the Windows Security Settings
-  - Regedit Changes:
-    - Admin-Shell: `.\PsExec64.exe -s -i -d c:\windows\regedit.exe`
-    - set `Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Features\TamperProtection` to `0x00`
-    - set `Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Features\TamperProtectionSource` to `0x00`
-      - This step only works if tamper protection is already disabled via the System Settings before. So we tamper with the tamper protection settings now xD. (Tamper Protection protects the registry from being changed in certain places)
-  - Task Schedular changes:
-    - open Task Scheduler (german. Aufgabenplanung)
-    - Go To (german): Aufgabenplanungsbibliothek/Microsoft/Windows/Windows Defender
-    - Right click and press deactivate on all planned tasks.
-  - Open Local Group Policy Editor
-    - From Admin-Shell: `c:\windows\system32\gpedit.msc` (can not be run as SYSTEM user but Admin seems enough)
-    - -> Computer Configuration > Administrative Templates > Windows Components > Microsoft Defender Antivirus 
-      -> Enable Turn off Microsoft Defender Antivirus
-  - Some steps that did not work (skip them):
-    - (Does not work) So... we have to get rid of MsMpEng...
-    - (This does not work) Disable the service, open admin shell and run
-      - `.\PsExec64.exe -s -i -d %windir%\system32\services.msc` (does not work)
-      - `.\PsExec64.exe -s -i -d C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`
-        - SYSTEM shell:
-        
-              Get-Service -Name WinDefend
-              Stop-Service -Name WinDefend -force
-              Set-Service -Name WinDefend -startupType disabled
-              Get-Service -Name WinDefend | Select Name, Status, StartType
-          
-        - Does not work
-    - (Does not work) So get [Microsoft Sysinternals Autoruns](https://docs.microsoft.com/en-us/sysinternals/downloads/autoruns)
-      - Copy Autoruns64.exe into same folder then nircmd.exe
-      - From Admin-Shell: `.\PsExec64.exe -s -i -d Autoruns64.exe`
-      - Uncheck `Hide Windows Entries`
-      - Search for `WinDefend`
-      - Uncheck the Box next to `WinDefend`
-      - We still cannot set `Computer\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WinDefend\Start` from 2 (Start)
-        to 4 (Disabled).
-  - Wait and restart the Local Group Policy Editor after a while and set the Turn Off Microsoft Defender Antivirus again
-  - Restart the Computer
-  - Ok now go to Windows Security and when you see Realtime Protection on and Tamper Protection on, then try
-    to disable Tamper protection first. This should toggle Realtime Protection automatically.
-  - Restart computer
-  - `Tamper Protection off and Realtime Protection off` should be off now
-
 
 - Setup WSL2 with latest Ubuntu LTS
 
 
 - Setup Docker for Windows (available in WSL2)
-
-
-- File Explorer Options -> General -> Privacy -> Uncheck: Show files from Office.com
-- File Explorer Options -> General -> Open File Explorer to: This PC
-- File Explorer Options -> View -> Check: Display the full path in the title bar.
-- File Explorer Options -> View -> Uncheck: Hide folder merge conflicts
-- File Explorer Options -> View -> Uncheck: Use Sharing Wizard
 
 
 - Save Space (if applicable):
@@ -207,6 +163,69 @@ A Rapid way of Windows 10 installation:
 - Set password to never expire: Win+R -> `winplwiz` -> Advanced. User -> right-click user -> properties -> Check: Password never expires.
 
 - Manually manage paging (this is swap): `Win + R` -> `sysdm.cpl` -> Advanced -> performance -> settings -> Advanced -> Change ... -> AFTER CHANGING YOU HAVE TO CLICK THE `SET` button.
+
+- Update wsl.exe by starting the Terminal.app and run: `wsl.exe --update`.
+
+- **Disable Windows Defender**
+  - The only sustainable and clean method to get rid of Windows Defender seems to be installing a fresh windows instance without it. Check out the ntlite based windows installation method.
+  - The following will probably not work and in the end you might need a script which runs on every Windows start. But you can try.
+  - Read about [Tamper Protection](
+    https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/prevent-changes-to-security-settings-with-tamper-protection?view=o365-worldwide)
+  - Go to Windows Security Settings and disable everything. Most importantly `Realtime Protection` and
+    `Tamper Protection`.
+    - e.g.: Windows Security -> Virus & threat protection -> Virus & threat protection settings ->
+      Manage settings -> Tamper Protection -> Off
+  - (Other path) Not tried: `https://privacy.sexy` got you covered with some scripts you might need to execute.
+  - Get [Microsoft Sysinternals PsTools](https://docs.microsoft.com/en-us/sysinternals/downloads/pstools)
+    - needed to run things as SYSTEM user (being Administrator is not enough)
+    - Example `.\PsExec64.exe -s -i -d cmd.exe`
+    - Alternative: `https://www.nirsoft.net/utils/nircmd.html`
+      - Unpacking might not work if you have Realtime Protection on
+      - Example: `.\nircmd.exe elevatecmd runassystem cmd.exe`
+  - Open Resource Monitor (perfmon.exe /res)
+    - From Admin-Shell: `.\PsExec64.exe -s -i -d c:\windows\system32\perfmon.exe /res`
+    - -> Overview -> Right click "MsMpEng.exe" and press suspend.
+    - Warning: This step can cause windows to freeze if you did not disable all Options in the Windows Security Settings
+  - Regedit Changes:
+    - Admin-Shell: `.\PsExec64.exe -s -i -d c:\windows\regedit.exe`
+    - set `Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Features\TamperProtection` to `0x00`
+    - set `Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows Defender\Features\TamperProtectionSource` to `0x00`
+      - This step only works if tamper protection is already disabled via the System Settings before. So we tamper with the tamper protection settings now xD. (Tamper Protection protects the registry from being changed in certain places)
+  - Task Schedular changes:
+    - open Task Scheduler (german. Aufgabenplanung)
+    - Go To (german): Aufgabenplanungsbibliothek/Microsoft/Windows/Windows Defender
+    - Right click and press deactivate on all planned tasks.
+  - Open Local Group Policy Editor
+    - From Admin-Shell: `c:\windows\system32\gpedit.msc` (can not be run as SYSTEM user but Admin seems enough)
+    - -> Computer Configuration > Administrative Templates > Windows Components > Microsoft Defender Antivirus
+      -> Enable Turn off Microsoft Defender Antivirus
+  - Some steps that did not work (skip them):
+    - (Does not work) So... we have to get rid of MsMpEng...
+    - (This does not work) Disable the service, open admin shell and run
+      - `.\PsExec64.exe -s -i -d %windir%\system32\services.msc` (does not work)
+      - `.\PsExec64.exe -s -i -d C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`
+        - SYSTEM shell:
+
+              Get-Service -Name WinDefend
+              Stop-Service -Name WinDefend -force
+              Set-Service -Name WinDefend -startupType disabled
+              Get-Service -Name WinDefend | Select Name, Status, StartType
+
+        - Does not work
+    - (Does not work) So get [Microsoft Sysinternals Autoruns](https://docs.microsoft.com/en-us/sysinternals/downloads/autoruns)
+      - Copy Autoruns64.exe into same folder then nircmd.exe
+      - From Admin-Shell: `.\PsExec64.exe -s -i -d Autoruns64.exe`
+      - Uncheck `Hide Windows Entries`
+      - Search for `WinDefend`
+      - Uncheck the Box next to `WinDefend`
+      - We still cannot set `Computer\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WinDefend\Start` from 2 (Start)
+        to 4 (Disabled).
+  - Wait and restart the Local Group Policy Editor after a while and set the Turn Off Microsoft Defender Antivirus again
+  - Restart the Computer
+  - Ok now go to Windows Security and when you see Realtime Protection on and Tamper Protection on, then try
+    to disable Tamper protection first. This should toggle Realtime Protection automatically.
+  - Restart computer
+  - `Tamper Protection off and Realtime Protection off` should be off now
 
 
 # Disk setup
