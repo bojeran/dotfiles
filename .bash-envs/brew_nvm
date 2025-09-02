@@ -2,6 +2,13 @@
 function env::brew-nvm {
     env::brew  # dependency
 
+    # check mode to speed up lazy loading
+    if [[ "$1" == "check" ]]; then
+      if [[ " ${ENV_BREW_NVM_ALLOWLIST} " != *" $2 "* ]]; then
+        return 8
+      fi
+    fi
+
     if common::prompt-string-contains "[nvm]"; then return 0; fi
 
     if [[ ! -s "/opt/homebrew/opt/nvm/nvm.sh" ]]; then return 1; fi

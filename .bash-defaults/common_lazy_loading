@@ -53,7 +53,7 @@ command_not_found_handle() {
     use_environment=""
     for auto_check_env in ${AUTO_CHECK_ENVS[@]}; do
         echo -n "Looking for command or function in ${auto_check_env} environment."
-        found_path=$( "env::${auto_check_env}" &>/dev/null; which "$1" || type -t "$1"; )
+        found_path=$( "env::${auto_check_env}" "check" "$1" &>/dev/null; which "$1" || type -t "$1"; )
         found_rc=$?
         if [[ ${found_rc} -eq 0 ]]; then
             echo -n " >>> ${found_path:-defined function found}"

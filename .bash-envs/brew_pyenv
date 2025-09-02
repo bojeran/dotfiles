@@ -2,6 +2,12 @@
 function env::brew-pyenv {
     env::brew || return 1  # dependency
 
+    # check mode to speed up lazy loading
+    if [[ "$1" == "check" ]]; then
+      export PATH="$HOME/.pyenv/shims:${PATH}"
+      return 0
+    fi
+
     if common::prompt-string-contains "[pyenv]"; then return 0; fi
 
     function error-and-exit {
