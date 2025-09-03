@@ -107,7 +107,6 @@ if helper::source-bash "${BASH_ENVS_LOCATION}/brew_nvm"; then
   : "No shadowing needed"
   alias nvm="unalias brew nvm &>/dev/null; env::brew-nvm; nvm"
   alias env::brew-nvm="unalias env::brew-nvm brew nvm &>/dev/null; env::brew-nvm"
-  ENV_BREW_NVM_ALLOWLIST="npm npx yarn pnpm node ts-node tsx nodemon pm2 serve http-server live-server prettier eslint tsc typescript vue-cli create-react-app angular-cli svelte-kit vite parcel webpack-cli gulp-cli grunt-cli yo generator-* firebase-tools vercel netlify-cli aws-cdk cdktf terraform-cdk heroku surge now gh claude"
 fi
 
 if helper::source-bash "${BASH_ENVS_LOCATION}/brew_pyenv"; then
