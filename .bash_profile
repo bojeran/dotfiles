@@ -205,6 +205,10 @@ fi
 common::show-shadow-counter-in-title
 
 
+######################
+### feature: load a custom bash_profile: `.bash_profile_extended`
+[[ -f $HOME/.bash_profile_extended ]] && source $HOME/.bash_profile_extended
+
 
 ######################
 ### feature: .bash_profile new content checker

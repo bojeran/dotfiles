@@ -26,6 +26,14 @@ If you intend to change your `.bash_profile` over time you might want to clone t
 nix-build -A bash_profile -o $HOME/.bash_profile
 ```
 
+# Add YOUR customizations on top
+To add commands, aliases that you like on top of the provided .bash_profile create a file named `$HOME/.bash_profile_extended` and add your customizations on top.
+```
+$EDITOR $HOME/.bash_profile_extended
+##      ^^^^^ add your customization here
+```
+
+
 # Comparison
 
 | Aspect                                                         | ★ This .bash\_profile                                   | Heavyweight framework                                | Stock \~/.bashrc |
