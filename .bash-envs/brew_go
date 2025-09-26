@@ -4,7 +4,7 @@ function env::brew-go {
     # Don't load homebrew as we only want go in this case
     # env::brew  # dependency
 
-    VERSION=1.24.*
+    VERSION=*.*.*
 
     if common::prompt-string-contains "[go]"; then return 0; fi
 
