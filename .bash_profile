@@ -54,6 +54,9 @@ if helper::source-bash "${BASH_DEFAULTS_LOCATION}/common"; then
 
   # Change the following to your preferred editor (usually: vim or nano)
   common::set-default-editor vim
+
+  # Force English locale so CLI tools use English output
+  common::overwrite-locale
 fi
 
 if ! helper::source-bash "${BASH_DEFAULTS_LOCATION}/common_shadows"; then
@@ -202,7 +205,12 @@ fi
 
 ######################
 ### feature: show shadow counter
-common::show-shadow-counter-in-title
+#common::show-shadow-counter-in-title
+
+
+######################
+### feature: show "temp" in title
+common::title "temp"
 
 
 ######################
