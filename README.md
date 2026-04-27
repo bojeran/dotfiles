@@ -1,15 +1,27 @@
 # dotfiles
 ## Instant Installation
 
+## With nix-command but without flakes
+```
+# .bash_profile
+nix build --file "https://github.com/bojeran/dotfiles/archive/refs/heads/master.tar.gz" bash_profile -o $HOME/.bash_profile
+
+# .vimrc
+nix build --file "https://github.com/bojeran/dotfiles/archive/refs/heads/master.tar.gz" vimrc -o $HOME/.vimrc
+
+# neovim with plugins
+nix profile install --file "https://github.com/bojeran/dotfiles/archive/refs/heads/master.tar.gz" neovim
+```
+
 ### With flakes (recommended)
 ```
 # .bash_profile
-nix build github:bojeran/dotfiles#bash_profile -o $HOME/.bash_profile
+nix build github:bojeran/dotfiles#bash_profile --no-write-lock-file -o $HOME/.bash_profile
 
 # .vimrc
-nix build github:bojeran/dotfiles#vimrc -o $HOME/.vimrc
+nix build github:bojeran/dotfiles#vimrc --no-write-lock-file -o $HOME/.vimrc
 
-# neovim with plugins
+# neovim with plugins (BROKEN under macOS use nix-command but without flakes instead)
 nix profile install github:bojeran/dotfiles#neovim
 ```
 
