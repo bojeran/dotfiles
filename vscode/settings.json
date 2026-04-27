@@ -73,8 +73,9 @@
     "latex-workshop.latex.autoBuild.run": "never",
 
     "workbench.startupEditor": "none",
-    "workbench.colorTheme": "Dracula Cleaner",
+    "workbench.colorTheme": "Darcula Theme from IntelliJ",
     "workbench.activityBar.location": "top",
+    "workbench.secondarySideBar.defaultVisibility": "hidden",
 
     "scm.alwaysShowRepositories": true,
     "scm.alwaysShowActions": true,
@@ -88,6 +89,10 @@
 
     "git.alwaysSignOff": true,
 
+    "godotTools.editorPath.godot4": "/Applications/Godot.app/Contents/MacOS/Godot",
+
     "telemetry.feedback.enabled": false,
-    "telemetry.editStats.enabled": false
+    "telemetry.editStats.enabled": false,
+
+    "markdown.preview.fontFamily": "'IBM Plex Mono ExtraLight', 'IBM Plex Mono Thin', 'IBM Plex Mono', sans-serif"
 }
