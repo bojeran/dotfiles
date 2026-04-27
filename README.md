@@ -1,7 +1,7 @@
 # dotfiles
 ## Instant Installation
 
-## With nix-command but without flakes
+### With nix-command but without flakes
 ```
 # .bash_profile
 nix build --file "https://github.com/bojeran/dotfiles/archive/refs/heads/master.tar.gz" bash_profile -o $HOME/.bash_profile
