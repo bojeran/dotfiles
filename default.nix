@@ -7,6 +7,8 @@ let
 
       src = pkgs.nix-gitignore.gitignoreSourcePure [ ./.gitignore ] ./.;
 
+      dontPatchShebangs = true;
+
       buildPhase = ''
         # Copy the merge script from nix-build-utils
         cp "${./nix-build-utils/merge_bash_profile.py}" merge.py
