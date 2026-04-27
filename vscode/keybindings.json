@@ -20,8 +20,18 @@
         "when": "workbench.scm.active"
     },
     {
+        "key": "ctrl+shift+g",
+        "command": "-workbench.view.scm",
+        "when": "workbench.scm.active"
+    },
+    {
         "key": "cmd+r",
         "command": "editor.action.startFindReplaceAction",
+        "when": "editorFocus || editorIsOpen"
+    },
+    {
+        "key": "alt+cmd+f",
+        "command": "-editor.action.startFindReplaceAction",
         "when": "editorFocus || editorIsOpen"
     },
     {
