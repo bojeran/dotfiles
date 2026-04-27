@@ -1,6 +1,21 @@
 # dotfiles
 ## Instant Installation
 
+### With flakes (recommended)
+```
+# .bash_profile
+nix build github:bojeran/dotfiles#bash_profile -o $HOME/.bash_profile
+
+# .vimrc
+nix build github:bojeran/dotfiles#vimrc -o $HOME/.vimrc
+
+# neovim with plugins
+nix profile install github:bojeran/dotfiles#neovim
+```
+
+**Note:** `flake.lock` is intentionally **not** committed to this repo. Every install/upgrade resolves `nixpkgs` against the latest `nixos-unstable`, so you always get current packages without needing me to bump a lock file. Nix will print a warning - this is expected and safe to ignore.
+
+### Without flakes
 ```
 # .bash_profile
 nix-build \
