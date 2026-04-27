@@ -30,8 +30,10 @@ let
 
     neovim = (pkgs.callPackage ./.neovim/my-neovim {});
 
+    vscode = (pkgs.callPackage ./vscode/my-vscode {});
+
     vimrc = pkgs.writeText "vimrc" (builtins.readFile ./.vimrc);
 in
 {
-  inherit bash_profile neovim vimrc;
+  inherit bash_profile neovim vscode vimrc;
 }

@@ -11,6 +11,9 @@ nix build --file "https://github.com/bojeran/dotfiles/archive/refs/heads/master.
 
 # neovim with plugins
 nix profile install --file "https://github.com/bojeran/dotfiles/archive/refs/heads/master.tar.gz" neovim
+
+# vscode with extensions and built-in settings/keybindings (vscode is unfree)
+NIXPKGS_ALLOW_UNFREE=1 nix profile install --file "https://github.com/bojeran/dotfiles/archive/refs/heads/master.tar.gz" vscode
 ```
 
 ### With flakes (recommended)
@@ -23,6 +26,9 @@ nix build github:bojeran/dotfiles#vimrc --no-write-lock-file -o $HOME/.vimrc
 
 # neovim with plugins (BROKEN under macOS use nix-command but without flakes instead)
 nix profile install github:bojeran/dotfiles#neovim
+
+# vscode with extensions and built-in settings/keybindings (vscode is unfree)
+NIXPKGS_ALLOW_UNFREE=1 nix profile install github:bojeran/dotfiles#vscode --impure
 ```
 
 **Note:** `flake.lock` is intentionally **not** committed to this repo. Every install/upgrade resolves `nixpkgs` against the latest `nixos-unstable`, so you always get current packages without needing me to bump a lock file. Nix will print a warning - this is expected and safe to ignore.
@@ -41,6 +47,9 @@ nix-build \
 
 # neovim with plugins
 nix-env -i -f "https://github.com/bojeran/dotfiles/archive/refs/heads/master.tar.gz" -A neovim
+
+# vscode with extensions and built-in settings/keybindings (vscode is unfree)
+NIXPKGS_ALLOW_UNFREE=1 nix-env -i -f "https://github.com/bojeran/dotfiles/archive/refs/heads/master.tar.gz" -A vscode
 ```
 
 
@@ -130,6 +139,11 @@ ln -s "$(pwd)/.ansible.cfg" ~/.ansible.cfg
 Installed Extensions: LaTeX Workshop, Vim, Remote - WSL, Zotero LaTeX.
 
 Put those files in the User Settings Path or in a `.vscode` folder in your project (Workspace Settings).
+
+For a Nix-managed VS Code that bundles extensions and bakes
+`vscode/settings.json` and `vscode/keybindings.json` into the install,
+see [`vscode/my-vscode/`](./vscode/my-vscode/) and the install commands
+above (`nix profile install ... vscode`).
 
 ### Windows
 User Settings Path: `%appdata%\Code\User`.

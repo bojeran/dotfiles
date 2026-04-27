@@ -1,5 +1,5 @@
 {
-  description = "bojeran dotfiles: bash profile, neovim, vimrc";
+  description = "bojeran dotfiles: bash profile, neovim, vscode, vimrc";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
@@ -19,7 +19,7 @@
           pkgs = import nixpkgs { inherit system; };
           dotfiles = import ./. { inherit pkgs; };
         in {
-          inherit (dotfiles) bash_profile neovim vimrc;
+          inherit (dotfiles) bash_profile neovim vscode vimrc;
         });
     };
 }
