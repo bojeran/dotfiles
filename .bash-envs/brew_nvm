@@ -7,7 +7,7 @@ function env::brew-nvm {
     # check mode to speed up lazy loading
     if [[ "$1" == "check" ]]; then
       # when not in allow list, it will simply not find
-      ENV_BREW_NVM_ALLOWLIST="npm npx yarn pnpm node ts-node tsx nodemon pm2 serve http-server live-server prettier eslint tsc typescript vue-cli create-react-app angular-cli svelte-kit vite parcel webpack-cli gulp-cli grunt-cli yo generator-* firebase-tools vercel netlify-cli aws-cdk cdktf terraform-cdk heroku surge now gh claude"
+      ENV_BREW_NVM_ALLOWLIST="npm npx yarn pnpm node ts-node tsx nodemon pm2 serve http-server live-server prettier eslint tsc typescript vue-cli create-react-app angular-cli svelte-kit vite parcel webpack-cli gulp-cli grunt-cli yo generator-* firebase-tools vercel netlify-cli aws-cdk cdktf terraform-cdk heroku surge now gh claude bob"
       if [[ " ${ENV_BREW_NVM_ALLOWLIST} " != *" $2 "* ]]; then
         # if not in allowlist -> pretend it was loaded succesful
         return 0
