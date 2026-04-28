@@ -59,6 +59,7 @@
     "zotero.latexCommand": "cite",
 
     "editor.detectIndentation": false,
+    "editor.lineNumbers": "relative",
     "editor.rulers": [
         140
     ],
