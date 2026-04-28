@@ -28,7 +28,9 @@ nix build github:bojeran/dotfiles#vimrc --no-write-lock-file -o $HOME/.vimrc
 nix profile install github:bojeran/dotfiles#neovim
 
 # vscode with extensions and built-in settings/keybindings (vscode is unfree)
-NIXPKGS_ALLOW_UNFREE=1 nix profile install github:bojeran/dotfiles#vscode --no-write-lock-file --impure
+NIXPKGS_ALLOW_UNFREE=2 nix profile install github:bojeran/dotfiles#vscode --no-write-lock-file --impure
+# upgrade vscode (invalidating cache with --refresh)
+NIXPKGS_ALLOW_UNFREE=1 nix profile upgrade vscode --no-write-lock-file --refresh --impure
 ```
 
 **Note:** `flake.lock` is intentionally **not** committed to this repo. Every install/upgrade resolves `nixpkgs` against the latest `nixos-unstable`, so you always get current packages without needing me to bump a lock file. Nix will print a warning - this is expected and safe to ignore.
