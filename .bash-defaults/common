@@ -74,7 +74,16 @@ function common::user-scoped-scripts-enable {
 }
 
 function common::title {
+    local no_color=0
+    if [[ "${1}" == "-n" ]]; then
+        no_color=1
+        shift
+    fi
     local title="$*"
+    if (( no_color )); then
+        echo -ne "\033]0;${title}\007"
+        return
+    fi
     local lower="${title,,}"
     # iTerm2 OSC 6: stable tab color derived from a djb2 hash of the lowercased title
     local hash=5381 i ch

@@ -210,7 +210,7 @@ fi
 
 ######################
 ### feature: show "temp" in title
-common::title "temp"
+common::title -n "temp"
 
 
 ######################
