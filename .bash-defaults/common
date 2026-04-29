@@ -89,6 +89,7 @@ function common::title {
 }
 # overwrite this alias when you want to overwrite it with your own title
 alias title=common::title
+alias name=common::title
 
 function common::narrow {
     export PS1="\h:\W \u\n\$ "
