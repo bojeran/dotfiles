@@ -1,4 +1,9 @@
 # dotfiles
+
+## Requirements
+
+Bash 4 or newer. macOS ships Bash 3.2 (last GPLv2 release) by default — see [.setup-os/mac-os/README.md](.setup-os/mac-os/README.md) for the upgrade recipe.
+
 ## Instant Installation
 
 ### With nix-command but without flakes
