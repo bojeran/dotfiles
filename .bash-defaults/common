@@ -74,7 +74,18 @@ function common::user-scoped-scripts-enable {
 }
 
 function common::title {
-    echo -ne "\033]0;"$*"\007"
+    local title="$*"
+    local lower="${title,,}"
+    # iTerm2 OSC 6: stable tab color derived from a djb2 hash of the lowercased title
+    local hash=5381 i ch
+    for ((i=0; i<${#lower}; i++)); do
+        printf -v ch '%d' "'${lower:i:1}"
+        hash=$(( ((hash * 33) ^ ch) & 0xFFFFFF ))
+    done
+    local r=$(( (hash >> 16) & 0xFF ))
+    local g=$(( (hash >> 8) & 0xFF ))
+    local b=$(( hash & 0xFF ))
+    echo -ne "\033]0;${title}\007\033]6;1;bg;red;brightness;${r}\007\033]6;1;bg;green;brightness;${g}\007\033]6;1;bg;blue;brightness;${b}\007"
 }
 # overwrite this alias when you want to overwrite it with your own title
 alias title=common::title
