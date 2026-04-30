@@ -11,6 +11,9 @@
 
   # Godot (settings.json sets godotTools.editorPath.godot4)
   geequlim.godot-tools
+
+  # Nix language support (syntax, formatting, LSP via nil/nixd)
+  jnoortheen.nix-ide
 ])
 ++
 # Extensions not in nixpkgs - fetched from the VS Code Marketplace.
