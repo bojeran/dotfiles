@@ -11,9 +11,6 @@
 
   # Godot (settings.json sets godotTools.editorPath.godot4)
   geequlim.godot-tools
-
-  # Code runner (referenced by settingsB.json)
-  formulahendry.code-runner
 ])
 ++
 # Extensions not in nixpkgs - fetched from the VS Code Marketplace.
@@ -27,5 +24,12 @@ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
     publisher = "rokoroku";
     version = "1.2.3";
     sha256 = "sha256-tlI+3DyDPo9tTOVTrEHoOtVTnEYSjgu9wojTXmEvv4E=";
+  }
+  {
+    # "Claude Code for VS Code" - Anthropic's official VS Code integration
+    name = "claude-code";
+    publisher = "anthropic";
+    version = "2.1.123";
+    sha256 = "sha256-8vJHvwYdCdQb0kHNbM6KNp27BJh8RGrBmw++Zz7nLf4=";
   }
 ]
