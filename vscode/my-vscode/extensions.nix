@@ -32,7 +32,7 @@ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
     # "Claude Code for VS Code" - Anthropic's official VS Code integration
     name = "claude-code";
     publisher = "anthropic";
-    version = "2.1.123";
-    sha256 = "sha256-8vJHvwYdCdQb0kHNbM6KNp27BJh8RGrBmw++Zz7nLf4=";
+    version = "2.1.150";
+    sha256 = "sha256-W/sSZZNtYLIj7vJ0VGZz+kwn2f5m+JrQTti0kMAaV5o=";
   }
 ]
