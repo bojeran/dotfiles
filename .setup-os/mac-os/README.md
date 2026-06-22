@@ -207,6 +207,23 @@
 
 - Go through `https://privacy.sexy` for macOS.
 
+- Git setup:
+
+  ```
+  git config --global core.editor vim
+  git config --global init.defaultBranch main
+
+  # `git files` -> show files changed per commit
+  git config --global alias.files "log --name-status"
+  git config --global alias.hfiles "log --name-status"
+
+  # `git pull` rebases local commits on top instead of creating a merge commit
+  git config --global pull.rebase true
+
+  # `git merge` only allowed when it can fast-forward, blocking accidental merge commits
+  git config --global merge.ff only
+  ```
+
 - NEEDS REWORK BECAUSE ITS SLOW AND THE SHORTCUT DOESN'T WORK: Shift+CMD+N create folder in Finder in current directory instead of top level.
   - Automator -> Quick Action
     1. Workflow receives **current folders** in **Finder.app**
